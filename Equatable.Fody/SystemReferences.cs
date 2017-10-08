@@ -22,9 +22,14 @@
             //GetTypeFromHandle = coreTypes.GetMethod<Type, RuntimeTypeHandle>(nameof(Type.GetTypeFromHandle));
             //GetPropertyInfo = coreTypes.GetMethod<Type, string>(nameof(Type.GetProperty));
 
-            IEquatableType = coreTypes.GetType(typeof(IEquatable<>));
+            IEquatable = coreTypes.GetType(typeof(IEquatable<>));
             StringEquals = coreTypes.GetMethod<string, string, string, StringComparison>(nameof(string.Equals));
             ObjectEquals = coreTypes.GetMethod<object, object, object>(nameof(object.Equals));
+            ObjectGetHashCode = coreTypes.GetMethod<object>(nameof(object.GetHashCode));
+
+            StringComparer = coreTypes.GetType<StringComparer>();
+            StringComparerGetHashCode = coreTypes.GetMethod<StringComparer, string>(nameof(StringComparer.GetHashCode));
+            StringComparerEquals = coreTypes.GetMethod<StringComparer, string, string>(nameof(StringComparer.Equals));
         }
 
         class CoreTypes
@@ -101,13 +106,25 @@
         //public MethodReference GetPropertyInfo { get; }
 
         [NotNull]
-        public TypeReference IEquatableType { get; }
+        public TypeReference IEquatable { get; }
 
         [NotNull]
         public MethodReference ObjectEquals { get; }
 
         [NotNull]
+        public MethodReference ObjectGetHashCode { get; }
+
+        [NotNull]
         public MethodReference StringEquals { get; }
+
+        [NotNull]
+        public TypeReference StringComparer { get; }
+
+        [NotNull]
+        public MethodReference StringComparerGetHashCode { get; }
+
+        [NotNull]
+        public MethodReference StringComparerEquals { get; }
 
         [NotNull, ItemNotNull]
         private static IEnumerable<TypeDefinition> GetTypes([NotNull] IAssemblyResolver assemblyResolver, [NotNull] string name)

@@ -18,7 +18,7 @@
         private readonly ModuleDefinition _moduleDefinition;
         [NotNull]
         private readonly SystemReferences _systemReferences;
-
+        [NotNull, ItemNotNull]
         private static readonly HashSet<string> _simpleTypes = new HashSet<string>(new[]
         {
             "System.Boolean",
@@ -34,12 +34,15 @@
             "System.Int16",
             "System.UInt16"
         });
+        [NotNull]
+        private readonly MethodDefinition _aggregateHashCodeMethod;
 
         public EquatableWeaver([NotNull] ModuleWeaver moduleWeaver)
         {
             _logger = moduleWeaver;
             _moduleDefinition = moduleWeaver.ModuleDefinition;
             _systemReferences = moduleWeaver.SystemReferences;
+            _aggregateHashCodeMethod = InjectAggregateHashCode(_moduleDefinition);
         }
 
         public void Execute()
@@ -64,19 +67,48 @@
             }
         }
 
+        [NotNull]
+        private static MethodDefinition InjectAggregateHashCode([NotNull] ModuleDefinition moduleDefinition)
+        {
+            var typeSystem = moduleDefinition.TypeSystem;
+
+            var type = new TypeDefinition("", "<HashCode>", TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit, typeSystem.Object);
+            var method = new MethodDefinition("Aggregate", MethodAttributes.Static | MethodAttributes.HideBySig, typeSystem.Int32);
+
+            method.Parameters.AddRange(new ParameterDefinition("hash1", ParameterAttributes.None, typeSystem.Int32), new ParameterDefinition("hash2", ParameterAttributes.None, typeSystem.Int32));
+
+            method.Body.Instructions.AddRange(
+                Instruction.Create(OpCodes.Ldarg_0),
+                Instruction.Create(OpCodes.Ldc_I4_5),
+                Instruction.Create(OpCodes.Shl),
+                Instruction.Create(OpCodes.Ldarg_0),
+                Instruction.Create(OpCodes.Add),
+                Instruction.Create(OpCodes.Ldarg_1),
+                Instruction.Create(OpCodes.Xor),
+                Instruction.Create(OpCodes.Ret)
+            );
+
+            type.Methods.Add(method);
+            moduleDefinition.Types.Add(type);
+
+            return method;
+        }
+
         private void InjectEquatable([NotNull] TypeDefinition classDefinition, [NotNull] IEnumerable<MemberDefinition> membersToCompare, MethodDefinition customEquals, MethodDefinition customGetHashCode)
         {
-            classDefinition.Interfaces.Add(new InterfaceImplementation(_systemReferences.IEquatableType.MakeGenericInstanceType(classDefinition)));
+            classDefinition.Interfaces.Add(new InterfaceImplementation(_systemReferences.IEquatable.MakeGenericInstanceType(classDefinition)));
             var methods = classDefinition.Methods;
 
             var internalEqualsMethod = CreateInternalEqualsMethod(classDefinition, membersToCompare, customEquals);
             var equalsTypeMethod = CreateEqualsTypeMethod(classDefinition, internalEqualsMethod);
+            var getHashCodeMethod = CreateGetHashCode(classDefinition, membersToCompare, customGetHashCode);
 
             methods.Add(internalEqualsMethod);
             methods.Add(equalsTypeMethod);
             methods.Add(CreateEqualsObjectMethod(classDefinition, equalsTypeMethod));
             methods.Add(CreateEqualityOperator(classDefinition, internalEqualsMethod));
             methods.Add(CreateInequalityOperator(classDefinition, internalEqualsMethod));
+            methods.Add(getHashCodeMethod);
         }
 
         [NotNull]
@@ -105,15 +137,17 @@
 
                 if (memberType.FullName == typeof(string).FullName)
                 {
-                    var comparison = (int)memberDefinition.EqualsAttribute.ConstructorArguments.Select(a => a.Value).FirstOrDefault();
+                    var comparison = (StringComparison)memberDefinition.EqualsAttribute.ConstructorArguments.Select(a => a.Value).FirstOrDefault();
+                    var comparer = _systemReferences.StringComparer;
+                    var getComparerMethod = comparer.Resolve().Properties.FirstOrDefault(p => p.Name == comparison.ToString())?.GetMethod;
 
                     instructions.AddRange(
+                        Instruction.Create(OpCodes.Call, _moduleDefinition.ImportReference(getComparerMethod)),
                         Instruction.Create(OpCodes.Ldarg_0),
                         loadInstruction,
                         Instruction.Create(OpCodes.Ldarg_1),
                         loadInstruction,
-                        Instruction.Create(OpCodes.Ldc_I4, comparison),
-                        Instruction.Create(OpCodes.Call, _systemReferences.StringEquals),
+                        Instruction.Create(OpCodes.Callvirt, _systemReferences.StringComparerEquals),
                         Instruction.Create(OpCodes.Brfalse, returnFalseLabel));
                 }
                 else if (memberType.IsValueType)
@@ -212,6 +246,8 @@
             var method = new MethodDefinition("Equals", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final, _moduleDefinition.TypeSystem.Boolean);
 
             method.Parameters.Add(new ParameterDefinition("other", ParameterAttributes.None, classDefinition));
+            method.IsFinal = true;
+
             var instructions = method.Body.Instructions;
 
             if (classDefinition.IsValueType)
@@ -312,7 +348,7 @@
                 Instruction.Create(OpCodes.Ldarg_1),
                 Instruction.Create(OpCodes.Call, internalEqualsMethod),
                 Instruction.Create(OpCodes.Ret)
-                );
+            );
 
             return method;
         }
@@ -334,6 +370,72 @@
                 Instruction.Create(OpCodes.Ceq),
                 Instruction.Create(OpCodes.Ret)
             );
+
+            return method;
+        }
+
+        [NotNull]
+        private MethodDefinition CreateGetHashCode([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customGetHashCode)
+        {
+            var method = new MethodDefinition("GetHashCode", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual, _moduleDefinition.TypeSystem.Int32);
+
+            var instructions = method.Body.Instructions;
+
+            instructions.Add(Instruction.Create(OpCodes.Ldc_I4, 397));
+
+            foreach (var memberDefinition in membersToCompare)
+            {
+                var memberType = memberDefinition.MemberType;
+
+                if (memberType.FullName == typeof(string).FullName)
+                {
+                    var comparison = (StringComparison)memberDefinition.EqualsAttribute.ConstructorArguments.Select(a => a.Value).FirstOrDefault();
+                    var comparer = _systemReferences.StringComparer;
+                    var getComparerMethod = comparer.Resolve().Properties.FirstOrDefault(p => p.Name == comparison.ToString())?.GetMethod;
+
+                    instructions.AddRange(
+                        Instruction.Create(OpCodes.Call, _moduleDefinition.ImportReference(getComparerMethod)),
+                        Instruction.Create(OpCodes.Ldarg_0),
+                        memberDefinition.GetValueInstruction,
+                        Instruction.Create(OpCodes.Callvirt, _systemReferences.StringComparerGetHashCode)
+                        );
+                }
+                else if (memberType.IsValueType)
+                {
+                    instructions.AddRange(
+                        Instruction.Create(OpCodes.Ldarg_0),
+                        memberDefinition.GetValueInstruction);
+
+                    if (memberType.FullName != typeof(int).FullName)
+                    {
+                        instructions.AddRange(
+                            Instruction.Create(OpCodes.Box, memberType),
+                            Instruction.Create(OpCodes.Callvirt, _systemReferences.ObjectGetHashCode)
+                        );
+                    }
+                }
+                else
+                {
+                    instructions.AddRange(
+                        Instruction.Create(OpCodes.Ldarg_0),
+                        memberDefinition.GetValueInstruction,
+                        Instruction.Create(OpCodes.Callvirt, _systemReferences.ObjectGetHashCode)
+                    );
+                }
+
+                instructions.Add(Instruction.Create(OpCodes.Call, _aggregateHashCodeMethod));
+            }
+
+            if (customGetHashCode != null)
+            {
+                instructions.AddRange(
+                    Instruction.Create(OpCodes.Ldarg_0),
+                    Instruction.Create(OpCodes.Call, customGetHashCode),
+                    Instruction.Create(OpCodes.Call, _aggregateHashCodeMethod)
+                );
+            }
+
+            instructions.Add(Instruction.Create(OpCodes.Ret));
 
             return method;
         }
