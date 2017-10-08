@@ -11,14 +11,10 @@
 
     internal abstract class MemberDefinition
     {
-        private MemberDefinition([NotNull] IMemberDefinition member)
+        private MemberDefinition([NotNull] ICustomAttributeProvider member)
         {
-            Member = member;
             EqualsAttribute = member.CustomAttributes.GetAttribute(AttributeNames.Equals);
         }
-
-        [NotNull]
-        public IMemberDefinition Member { get; }
 
         [CanBeNull]
         public CustomAttribute EqualsAttribute { get; }
@@ -32,7 +28,7 @@
         [NotNull]
         public static IEnumerable<MemberDefinition> GetMembers([NotNull] TypeDefinition classDefinition)
         {
-            return classDefinition.Fields.Select(f => (MemberDefinition) new FieldMemberDefinition(f))
+            return classDefinition.Fields.Select(f => (MemberDefinition)new FieldMemberDefinition(f))
                 .Concat(classDefinition.Properties.Select(p => new PropertyMemberDefinition(p)));
         }
 

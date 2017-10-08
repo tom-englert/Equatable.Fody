@@ -135,7 +135,7 @@
             }
         }
 
-        public static void InsertRange<T>([NotNull, ItemCanBeNull] this IList<T> collection, int index, [NotNull, ItemCanBeNull] params T[] values)
+        public static void InsertRange<T>([NotNull, ItemCanBeNull] this IList<T> collection, ref int index, [NotNull, ItemCanBeNull] params T[] values)
         {
             foreach (var value in values)
             {

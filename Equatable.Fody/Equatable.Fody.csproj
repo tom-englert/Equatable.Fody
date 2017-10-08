@@ -73,6 +73,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="MemberDefinition.cs" />
     <Compile Include="ModuleWeaver.cs" />
+    <Compile Include="Parameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceCleaner.cs" />
     <Compile Include="SystemReferences.cs" />
