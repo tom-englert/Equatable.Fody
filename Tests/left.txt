@@ -1,0 +1,130 @@
+// Type: AssemblyToProcess.ReferenceObjectSimple 
+// Assembly: AssemblyToProcess, Version=0.1.0.14680, Culture=neutral, PublicKeyToken=null
+// MVID: 3EAFC708-9333-4946-A9A7-973271B3B520
+// Location: D:\Develop\My Open Source\GitHub\Equatable.Fody\AssemblyToProcess\bin\Debug\AssemblyToProcess.dll
+// Sequence point data from D:\Develop\My Open Source\GitHub\Equatable.Fody\AssemblyToProcess\bin\Debug\AssemblyToProcess.pdb
+
+.class private auto ansi beforefieldinit 
+  AssemblyToProcess.ReferenceObjectSimple
+    extends [mscorlib]System.Object
+    implements class [mscorlib]System.IEquatable`1<class AssemblyToProcess.ReferenceObjectSimple>
+{
+
+  .field private string '<Property1>k__BackingField'
+  .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() 
+    = (01 00 00 00 )
+
+  .method public hidebysig specialname instance string 
+    get_Property1() cil managed 
+  {
+    .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() 
+      = (01 00 00 00 )
+    .maxstack 8
+
+    // [9 35 - 9 39]
+    IL_0000: ldarg.0      // this
+    IL_0001: ldfld        string AssemblyToProcess.ReferenceObjectSimple::'<Property1>k__BackingField'
+    IL_0006: ret          
+
+  } // end of method ReferenceObjectSimple::get_Property1
+
+  .method public hidebysig specialname instance void 
+    set_Property1(
+      string 'value'
+    ) cil managed 
+  {
+    .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() 
+      = (01 00 00 00 )
+    .maxstack 8
+
+    // [9 40 - 9 44]
+    IL_0000: ldarg.0      // this
+    IL_0001: ldarg.1      // 'value'
+    IL_0002: stfld        string AssemblyToProcess.ReferenceObjectSimple::'<Property1>k__BackingField'
+    IL_0007: ret          
+
+  } // end of method ReferenceObjectSimple::set_Property1
+
+  .method private hidebysig static bool 
+    InternalEquals(
+      class AssemblyToProcess.ReferenceObjectSimple left, 
+      class AssemblyToProcess.ReferenceObjectSimple right
+    ) cil managed 
+  {
+    .maxstack 8
+
+    // [13 13 - 13 60]
+    IL_0000: ldarg.0      // left
+    IL_0001: callvirt     instance string AssemblyToProcess.ReferenceObjectSimple::get_Property1()
+    IL_0006: ldarg.1      // right
+    IL_0007: callvirt     instance string AssemblyToProcess.ReferenceObjectSimple::get_Property1()
+    IL_000c: call         bool [mscorlib]System.Object::Equals(object, object)
+    IL_0011: ret          
+
+  } // end of method ReferenceObjectSimple::InternalEquals
+
+  .method public final hidebysig virtual newslot instance bool 
+    Equals(
+      class AssemblyToProcess.ReferenceObjectSimple other
+    ) cil managed 
+  {
+    .maxstack 8
+
+    // [18 13 - 18 46]
+    IL_0000: ldarg.1      // other
+    IL_0001: brtrue.s     IL_0005
+
+    // [19 17 - 19 30]
+    IL_0003: ldc.i4.0     
+    IL_0004: ret          
+
+    // [20 13 - 20 46]
+    IL_0005: ldarg.0      // this
+    IL_0006: ldarg.1      // other
+    IL_0007: bne.un.s     IL_000b
+
+    // [21 17 - 21 29]
+    IL_0009: ldc.i4.1     
+    IL_000a: ret          
+
+    // [23 13 - 23 48]
+    IL_000b: ldarg.0      // this
+    IL_000c: ldarg.1      // other
+    IL_000d: call         bool AssemblyToProcess.ReferenceObjectSimple::InternalEquals(class AssemblyToProcess.ReferenceObjectSimple, class AssemblyToProcess.ReferenceObjectSimple)
+    IL_0012: ret          
+
+  } // end of method ReferenceObjectSimple::Equals
+
+  .method public hidebysig virtual instance bool 
+    Equals(
+      object obj
+    ) cil managed 
+  {
+    .maxstack 8
+
+    // [28 13 - 28 57]
+    IL_0000: ldarg.0      // this
+    IL_0001: ldarg.1      // obj
+    IL_0002: isinst       AssemblyToProcess.ReferenceObjectSimple
+    IL_0007: call         instance bool AssemblyToProcess.ReferenceObjectSimple::Equals(class AssemblyToProcess.ReferenceObjectSimple)
+    IL_000c: ret          
+
+  } // end of method ReferenceObjectSimple::Equals
+
+  .method public hidebysig specialname rtspecialname instance void 
+    .ctor() cil managed 
+  {
+    .maxstack 8
+
+    IL_0000: ldarg.0      // this
+    IL_0001: call         instance void [mscorlib]System.Object::.ctor()
+    IL_0006: ret          
+
+  } // end of method ReferenceObjectSimple::.ctor
+
+  .property instance string Property1() 
+  {
+    .get instance string AssemblyToProcess.ReferenceObjectSimple::get_Property1() 
+    .set instance void AssemblyToProcess.ReferenceObjectSimple::set_Property1(string) 
+  } // end of property ReferenceObjectSimple::Property1
+} // end of class AssemblyToProcess.ReferenceObjectSimple

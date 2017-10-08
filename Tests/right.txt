@@ -1,0 +1,130 @@
+// Type: AssemblyToProcess.ReferenceObjectSimple1 
+// Assembly: AssemblyToProcess, Version=0.2.0.14488, Culture=neutral, PublicKeyToken=null
+// MVID: E1DC27D0-E173-4691-8274-FB85C79F5CE6
+// Location: D:\Develop\My Open Source\GitHub\Equatable.Fody\AssemblyToProcess\bin\Debug\AssemblyToProcess2.dll
+// Sequence point data from decompiler
+
+.class private auto ansi beforefieldinit 
+  AssemblyToProcess.ReferenceObjectSimple1
+    extends [mscorlib]System.Object
+    implements class [mscorlib]System.IEquatable`1<class AssemblyToProcess.ReferenceObjectSimple1>
+{
+
+  .field private string '<Property1>k__BackingField'
+  .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() 
+    = (01 00 00 00 )
+
+  .method public hidebysig specialname instance string 
+    get_Property1() cil managed 
+  {
+    .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() 
+      = (01 00 00 00 )
+    .maxstack 8
+
+    IL_0000: ldarg.0      // this
+    IL_0001: ldfld        string AssemblyToProcess.ReferenceObjectSimple1::'<Property1>k__BackingField'
+    IL_0006: ret          
+
+  } // end of method ReferenceObjectSimple1::get_Property1
+
+  .method public hidebysig specialname instance void 
+    set_Property1(
+      string 'value'
+    ) cil managed 
+  {
+    .custom instance void [mscorlib]System.Runtime.CompilerServices.CompilerGeneratedAttribute::.ctor() 
+      = (01 00 00 00 )
+    .maxstack 8
+
+    IL_0000: ldarg.0      // this
+    IL_0001: ldarg.1      // 'value'
+    IL_0002: stfld        string AssemblyToProcess.ReferenceObjectSimple1::'<Property1>k__BackingField'
+    IL_0007: ret          
+
+  } // end of method ReferenceObjectSimple1::set_Property1
+
+  .method public hidebysig specialname rtspecialname instance void 
+    .ctor() cil managed 
+  {
+    .maxstack 8
+
+    IL_0000: ldarg.0      // this
+    IL_0001: call         instance void [mscorlib]System.Object::.ctor()
+    IL_0006: ret          
+
+  } // end of method ReferenceObjectSimple1::.ctor
+
+  .method private hidebysig static bool 
+    InternalEquals(
+      class AssemblyToProcess.ReferenceObjectSimple1 left, 
+      class AssemblyToProcess.ReferenceObjectSimple1 right
+    ) cil managed 
+  {
+    .maxstack 8
+
+    // [17 7 - 17 79]
+    IL_0000: ldarg.0      // left
+    IL_0001: callvirt     instance string AssemblyToProcess.ReferenceObjectSimple1::get_Property1()
+    IL_0006: ldarg.1      // right
+    IL_0007: callvirt     instance string AssemblyToProcess.ReferenceObjectSimple1::get_Property1()
+    IL_000c: callvirt     bool [mscorlib]System.Object::Equals(object, object)
+    IL_0011: ret          
+    IL_0012: ldc.i4.0     
+    IL_0013: ret          
+
+  } // end of method ReferenceObjectSimple1::InternalEquals
+
+  .method public final hidebysig virtual instance bool 
+    Equals(
+      class AssemblyToProcess.ReferenceObjectSimple1 other
+    ) cil managed 
+  {
+    .maxstack 8
+
+    // [22 7 - 22 25]
+    IL_0000: ldarg.1      // other
+    IL_0001: brtrue.s     IL_0005
+
+    // [23 9 - 23 22]
+    IL_0003: ldc.i4.0     
+    IL_0004: ret          
+
+    // [24 7 - 24 25]
+    IL_0005: ldarg.0      // this
+    IL_0006: ldarg.1      // other
+    IL_0007: bne.un.s     IL_000b
+
+    // [25 9 - 25 21]
+    IL_0009: ldc.i4.1     
+    IL_000a: ret          
+
+    // [26 7 - 26 65]
+    IL_000b: ldarg.0      // this
+    IL_000c: ldarg.1      // other
+    IL_000d: call         bool AssemblyToProcess.ReferenceObjectSimple1::InternalEquals(class AssemblyToProcess.ReferenceObjectSimple1, class AssemblyToProcess.ReferenceObjectSimple1)
+    IL_0012: ret          
+
+  } // end of method ReferenceObjectSimple1::Equals
+
+  .method public hidebysig virtual instance bool 
+    Equals(
+      object obj
+    ) cil managed 
+  {
+    .maxstack 8
+
+    // [31 7 - 31 57]
+    IL_0000: ldarg.0      // this
+    IL_0001: ldarg.1      // obj
+    IL_0002: isinst       AssemblyToProcess.ReferenceObjectSimple1
+    IL_0007: call         instance bool AssemblyToProcess.ReferenceObjectSimple1::Equals(class AssemblyToProcess.ReferenceObjectSimple1)
+    IL_000c: ret          
+
+  } // end of method ReferenceObjectSimple1::Equals
+
+  .property instance string Property1() 
+  {
+    .get instance string AssemblyToProcess.ReferenceObjectSimple1::get_Property1() 
+    .set instance void AssemblyToProcess.ReferenceObjectSimple1::set_Property1(string) 
+  } // end of property ReferenceObjectSimple1::Property1
+} // end of class AssemblyToProcess.ReferenceObjectSimple1
