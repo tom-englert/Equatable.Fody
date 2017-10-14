@@ -7,117 +7,122 @@
 
     using NUnit.Framework;
 
-    using Target = ObjectWithGenericTypeParam<string, ObjectWithValueTypeMembers>;
-
-    internal class ObjectWithGenericTypeParam<T1, T2>
+    namespace Base
     {
-        [Equals]
-        public string _field;
+        using Target = ObjectWithGenericTypeParam<string, ObjectWithValueTypeMembers>;
 
-        [Equals]
-        public Tuple<int, T1> Property1 { get; set; }
-
-        [Equals]
-        public Tuple<int, T2> Property2 { get; set; }
-    }
-
-    internal static class ObjectWithGenericTypeParamTests
-    {
-        [Export]
-        public static void ImplementsIEquatable()
+        internal class ObjectWithGenericTypeParam<T1, T2>
         {
-            var target = new Target();
+            [Equals]
+            public string _field;
 
-            Assert.IsTrue(target is IEquatable<Target>);
+            [Equals]
+            public Tuple<int, T1> Property1 { get; set; }
+
+            [Equals]
+            public Tuple<int, T2> Property2 { get; set; }
         }
 
-        [Export]
-        public static void AreEqualWhenAllPropertiesAreEqual()
+        internal static class ObjectWithGenericTypeParamTests
         {
-            var left = new Target
+            [Export]
+            public static void ImplementsIEquatable()
             {
-                _field = "test",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
-            };
+                var target = new Target();
 
-            var right = new Target
+                Assert.IsTrue(target is IEquatable<Target>);
+            }
+
+            [Export]
+            public static void AreEqualWhenAllPropertiesAreEqual()
             {
-                _field = "test",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
-            };
+                var left = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
+                };
 
-            Assert.AreEqual(left, right);
-            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
-        }
+                var right = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
+                };
 
-        [Export]
-        public static void AreDifferentWhenOneAttributedPropertyIsDifferent()
-        {
-            var left = new Target
+                Assert.AreEqual(left, right);
+                Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
+            }
+
+            [Export]
+            public static void AreDifferentWhenOneAttributedPropertyIsDifferent()
             {
-                _field = "test",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
-            };
+                var left = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
+                };
 
-            var right = new Target
+                var right = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 4 }),
+                };
+
+                Assert.AreNotEqual(left, right);
+                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            }
+
+            [Export]
+            public static void AreDifferentWhenAllAttributedPropertiesAreDifferent()
             {
-                _field = "test",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 4 }),
-            };
+                var left = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
+                };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
-        }
+                var right = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(6, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 4 }),
+                };
 
-        [Export]
-        public static void AreDifferentWhenAllAttributedPropertiesAreDifferent()
-        {
-            var left = new Target
+                Assert.AreNotEqual(left, right);
+                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            }
+
+            [Export]
+            public static void AreDifferentWhenTheFieldIsDifferent()
             {
-                _field = "test",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
-            };
+                var left = new Target
+                {
+                    _field = "test",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
+                };
 
-            var right = new Target
-            {
-                _field = "test",
-                Property1 = new Tuple<int, string>(6, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 4 }),
-            };
+                var right = new Target
+                {
+                    _field = "test1",
+                    Property1 = new Tuple<int, string>(5, "test"),
+                    Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
+                };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
-        }
-
-        [Export]
-        public static void AreDifferentWhenTheFieldIsDifferent()
-        {
-            var left = new Target
-            {
-                _field = "test",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
-            };
-
-            var right = new Target
-            {
-                _field = "test1",
-                Property1 = new Tuple<int, string>(5, "test"),
-                Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
-            };
-
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.AreNotEqual(left, right);
+                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            }
         }
     }
 
     namespace Derived
     {
+        using AssemblyToProcess.Base;
+
         using Target = DerivedObjectWithGenericParam<ObjectWithValueTypeMembers>;
 
         internal class DerivedObjectWithGenericParam<T3>

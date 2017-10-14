@@ -48,7 +48,7 @@
             _logger = moduleWeaver;
             _moduleDefinition = moduleWeaver.ModuleDefinition;
             _systemReferences = moduleWeaver.SystemReferences;
-            var hashCodeMethod = InjectHashCode(_moduleDefinition);
+            var hashCodeMethod = InjectStaticHashCodeClass(_moduleDefinition);
             _aggregateHashCodeMethod = InjectAggregate(hashCodeMethod);
             _getHashCode = InjectGetHashCode(hashCodeMethod, _systemReferences);
             _getStringHashCode = InjectGetStringHashCode(hashCodeMethod, _systemReferences);
@@ -86,7 +86,17 @@
         }
 
         [NotNull]
-        private static TypeDefinition InjectHashCode([NotNull] ModuleDefinition moduleDefinition)
+        private static TypeDefinition InjectStaticHashCodeClass([NotNull] ModuleDefinition moduleDefinition)
+        {
+            var type = new TypeDefinition("", "<HashCode>", TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit, moduleDefinition.TypeSystem.Object);
+
+            moduleDefinition.Types.Add(type);
+
+            return type;
+        }
+
+        [NotNull]
+        private static MethodDefinition InjectAggregate([NotNull] TypeDefinition type)
         {
             /*
             static int Aggregate(int hash1, int hash2)
@@ -98,16 +108,6 @@
             }
             */
 
-            var type = new TypeDefinition("", "<HashCode>", TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit, moduleDefinition.TypeSystem.Object);
-
-            moduleDefinition.Types.Add(type);
-
-            return type;
-        }
-
-        [NotNull]
-        private static MethodDefinition InjectAggregate([NotNull] TypeDefinition type)
-        {
             var typeSystem = type.Module.TypeSystem;
             var method = new MethodDefinition("Aggregate", MethodAttributes.Static | MethodAttributes.HideBySig, typeSystem.Int32);
 
@@ -188,22 +188,19 @@
             return method;
         }
 
-
         private void InjectEquatable([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] ICollection<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEquals, [CanBeNull] MethodDefinition customGetHashCode)
         {
             classDefinition.Interfaces.Add(new InterfaceImplementation(_systemReferences.IEquatable.MakeGenericInstanceType(classDefinition.ReferenceFrom(classDefinition))));
 
-            var baseImplementations = GetBaseEqualsAndHashCode(classDefinition);
-
             var methods = classDefinition.Methods;
 
-            var internalEqualsMethod = CreateInternalEqualsMethod(classDefinition, membersToCompare, customEquals, baseImplementations.equals);
+            var internalEqualsMethod = CreateInternalEqualsMethod(classDefinition, membersToCompare, customEquals);
             methods.Add(internalEqualsMethod);
 
             var equalsTypeMethod = CreateTypedEqualsMethod(classDefinition, internalEqualsMethod);
             methods.Add(equalsTypeMethod);
 
-            var getHashCodeMethod = CreateGetHashCode(classDefinition, membersToCompare, customGetHashCode, baseImplementations.getHashCode);
+            var getHashCodeMethod = CreateGetHashCode(classDefinition, membersToCompare, customGetHashCode);
             methods.Add(getHashCodeMethod);
 
             methods.Add(CreateObjectEqualsOverrideMethod(classDefinition, equalsTypeMethod));
@@ -239,7 +236,7 @@
         }
 
         [NotNull]
-        private MethodDefinition CreateInternalEqualsMethod([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEqualsMethod, [CanBeNull] MethodDefinition baseEqualsMethod)
+        private MethodDefinition CreateInternalEqualsMethod([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEqualsMethod)
         {
             var method = new MethodDefinition("<InternalEquals>", MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static, _moduleDefinition.TypeSystem.Boolean);
 
@@ -262,6 +259,7 @@
 
                 var index = 0;
 
+                var baseEqualsMethod = GetBaseEqualsAndHashCode(classDefinition).equals;
                 if (baseEqualsMethod != null)
                 {
                     instructions.InsertRange(ref index,
@@ -528,7 +526,7 @@
         }
 
         [NotNull]
-        private MethodDefinition CreateGetHashCode([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customGetHashCode, [CanBeNull] MethodDefinition baseGetHashCode)
+        private MethodDefinition CreateGetHashCode([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customGetHashCode)
         {
             var method = new MethodDefinition("GetHashCode", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual, _moduleDefinition.TypeSystem.Int32);
 
@@ -542,6 +540,7 @@
             {
                 var index = 1;
 
+                var baseGetHashCode = GetBaseEqualsAndHashCode(classDefinition).getHashCode;
                 if (baseGetHashCode != null)
                 {
                     instructions.InsertRange(ref index,
