@@ -6,7 +6,7 @@
     using Equatable;
 
     using NUnit.Framework;
-
+    
     using Target = ObjectWithGenericTypeMembers;
 
     internal class ObjectWithGenericTypeMembers
@@ -41,6 +41,7 @@
             };
 
             Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -59,6 +60,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -77,6 +79,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
     }
 }

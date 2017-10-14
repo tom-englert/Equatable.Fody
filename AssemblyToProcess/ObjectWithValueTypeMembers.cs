@@ -51,10 +51,11 @@
             };
 
             Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
-        public static void AreSameWhenAttributedPropertiesAreEqual()
+        public static void AreEqualWhenAttributedPropertiesAreEqual()
         {
             var left = new Target
             {
@@ -73,6 +74,7 @@
             };
 
             Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -95,6 +97,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -117,6 +120,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -139,6 +143,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -161,6 +166,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
     }
 }

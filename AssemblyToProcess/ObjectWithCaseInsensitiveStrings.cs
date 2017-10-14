@@ -41,6 +41,8 @@
             };
 
             Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.AreEqual(HashCode.Aggregate(0, HashCode.Aggregate(StringComparer.OrdinalIgnoreCase.GetHashCode(left.Property1), left.Property2.GetHashCode())), left.GetHashCode());
         }
 
         [Export]
@@ -59,6 +61,8 @@
             };
 
             Assert.AreEqual(left, right);
+            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.AreEqual(HashCode.Aggregate(0, HashCode.Aggregate(StringComparer.OrdinalIgnoreCase.GetHashCode(left.Property1), left.Property2.GetHashCode())), left.GetHashCode());
         }
 
         [Export]
@@ -77,6 +81,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -95,6 +100,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -113,6 +119,7 @@
             };
 
             Assert.AreNotEqual(left, right);
+            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
     }
 }

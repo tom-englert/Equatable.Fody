@@ -7,6 +7,7 @@
     struct ReferenceStruct : IEquatable<ReferenceStruct>
     {
         public int Property1 { get; set; }
+
         public string Property2 { get; set; }
 
         public override bool Equals(object obj)
@@ -41,7 +42,7 @@
 
         public override int GetHashCode()
         {
-            return 1;
+            return HashCode.Aggregate(Property1.GetHashCode(), Property2.GetHashCode());
         }
     }
 

@@ -32,7 +32,7 @@ namespace Equatable.Fody
             if (obj == null)
                 return null;
 
-            return GetAssemblyName(obj.Scope) + "|" + obj.FullName;
+            return GetAssemblyName(obj.Scope) + "|" + obj.Resolve().FullName;
         }
 
         [CanBeNull]

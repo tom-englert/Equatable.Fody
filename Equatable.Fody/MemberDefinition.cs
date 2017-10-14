@@ -23,9 +23,23 @@
         public abstract TypeReference MemberType { get; }
 
         [NotNull]
-        public abstract Instruction GetValueInstruction { get; }
+        public abstract Instruction GetValueInstruction([NotNull] TypeReference caller);
 
         [NotNull]
+        public virtual Instruction GetLoadArgumentInstruction(MethodDefinition method, int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return Instruction.Create(OpCodes.Ldarg_0);
+                case 1:
+                    return Instruction.Create(OpCodes.Ldarg_1);
+                default:
+                    throw new InvalidOperationException("unsupported argument index");
+            }
+        }
+
+        [NotNull, ItemNotNull]
         public static IEnumerable<MemberDefinition> GetMembers([NotNull] TypeDefinition classDefinition)
         {
             return classDefinition.Fields.Select(f => (MemberDefinition)new FieldMemberDefinition(f))
@@ -46,7 +60,10 @@
 
             public override TypeReference MemberType => _field.FieldType;
 
-            public override Instruction GetValueInstruction => Instruction.Create(OpCodes.Ldfld, _field);
+            public override Instruction GetValueInstruction(TypeReference caller)
+            {
+                return Instruction.Create(OpCodes.Ldfld, _field.ReferenceFrom(caller));
+            }
         }
 
         private class PropertyMemberDefinition : MemberDefinition
@@ -62,7 +79,21 @@
 
             public override TypeReference MemberType => _property.PropertyType;
 
-            public override Instruction GetValueInstruction => Instruction.Create(OpCodes.Callvirt, _property.GetMethod);
+            public override Instruction GetValueInstruction(TypeReference caller)
+            {
+                var opCode = _property.DeclaringType.IsValueType ? OpCodes.Call : OpCodes.Callvirt;
+
+                return Instruction.Create(opCode, _property.GetMethod.ReferenceFrom(caller));
+            }
+
+            [NotNull]
+            public override Instruction GetLoadArgumentInstruction(MethodDefinition method, int index)
+            {
+                if (!_property.DeclaringType.IsValueType)
+                    return base.GetLoadArgumentInstruction(method, index);
+
+                return Instruction.Create(OpCodes.Ldarga_S, method.Parameters[index]);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace AssemblyToProcess
 {
     using System;
+    using System.Globalization;
 
     using Equatable;
 
@@ -11,16 +12,43 @@
 
         private string _string;
         private ReferenceObject _referenceObject;
+        private ReferenceObject _referenceObject1 { get; set; }
         private ReferenceObject[] _objectArray;
         private ReferenceStruct[] _valueArray;
         private string[] _stringArray;
         private Tuple<ReferenceObject, ReferenceStruct> _generic;
         private ReferenceStruct _struct;
         private WeavedReferenceStruct _struct2;
+        private WeavedReferenceObject _object1;
 
         public override int GetHashCode()
         {
-            return 1;
+            unchecked
+            {
+                var x = 0;
+                x = ((x << 5) + x) ^ _bool.GetHashCode();
+                x = ((x << 5) + x) ^ _double.GetHashCode();
+                return x;
+            }
+        }
+
+        public int GetHashCode1()
+        {
+            unchecked
+            {
+                var x = 0;
+                x = ((x << 5) + x);
+                x ^= _bool.GetHashCode();
+                x = ((x << 5) + x);
+                x ^= _double.GetHashCode();
+                return x;
+            }
+        }
+
+
+        int GetHashCode2()
+        {
+            return Aggregate(Aggregate(Aggregate(0, HashCode.GetStringHashCode(_string, StringComparer.OrdinalIgnoreCase)), HashCode.GetHashCode(_struct2)), HashCode.GetHashCode(_referenceObject1));
         }
 
         public override bool Equals(object obj)
@@ -60,6 +88,14 @@
                    && Equals(left._stringArray, right._stringArray)
                    && Equals(left._generic, right._generic)
                 ;
+        }
+
+        public static int Aggregate(int hash1, int hash2)
+        {
+            unchecked
+            {
+                return ((hash1 << 5) + hash1) ^ hash2;
+            }
         }
     }
 
