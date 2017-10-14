@@ -63,6 +63,7 @@
     <Compile Include="ObjectWithGenericTypeParam.cs" />
     <Compile Include="ObjectWithCustomEqualsAndHashCode.cs" />
     <Compile Include="ObjectWithValueTypeMembers.cs" />
+    <Compile Include="ReadMeSample.cs" />
     <Compile Include="StructWithGenericTypeParam.cs" />
     <Compile Include="ReferenceObject.cs" />
     <Compile Include="ReferenceObjectSimple.cs" />
