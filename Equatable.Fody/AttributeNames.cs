@@ -2,8 +2,8 @@
 {
     internal static class AttributeNames
     {
-        public const string Equals = "Equatable.Equals";
-        public const string CustomEquals = "Equatable.CustomEquals";
-        public const string CustomGetHashCode = "Equatable.CustomGetHashCode";
+        public const string Equals = "Equatable.EqualsAttribute";
+        public const string CustomEquals = "Equatable.CustomEqualsAttribute";
+        public const string CustomGetHashCode = "Equatable.CustomGetHashCodeAttribute";
     }
 }

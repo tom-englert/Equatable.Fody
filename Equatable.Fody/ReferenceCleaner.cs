@@ -18,6 +18,8 @@ namespace Equatable.Fody
         private static readonly HashSet<string> _attributesToRemove = new HashSet<string>
         {
             AttributeNames.Equals,
+            AttributeNames.CustomEquals,
+            AttributeNames.CustomGetHashCode
         };
 
         [NotNull]

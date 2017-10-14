@@ -71,8 +71,6 @@
                 var customEquals = classDefinition.Methods.FirstOrDefault(m => m.CustomAttributes.GetAttribute(AttributeNames.CustomEquals) != null);
                 var customGetHashCode = classDefinition.Methods.FirstOrDefault(m => m.CustomAttributes.GetAttribute(AttributeNames.CustomGetHashCode) != null);
 
-                // TODO: verify signature of custom methods...
-
                 if (!membersToCompare.Any() && (customEquals == null) && (customGetHashCode == null))
                     continue;
 
@@ -190,6 +188,9 @@
 
         private void InjectEquatable([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] ICollection<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEquals, [CanBeNull] MethodDefinition customGetHashCode)
         {
+            VerifyCustomEqualsSignature(classDefinition, customEquals);
+            VerifyCustomGetHashCodeSignature(classDefinition, customGetHashCode);
+
             classDefinition.Interfaces.Add(new InterfaceImplementation(_systemReferences.IEquatable.MakeGenericInstanceType(classDefinition.ReferenceFrom(classDefinition))));
 
             var methods = classDefinition.Methods;
@@ -206,6 +207,36 @@
             methods.Add(CreateObjectEqualsOverrideMethod(classDefinition, equalsTypeMethod));
             methods.Add(CreateEqualityOperator(classDefinition, internalEqualsMethod));
             methods.Add(CreateInequalityOperator(classDefinition, internalEqualsMethod));
+        }
+
+        private void VerifyCustomGetHashCodeSignature([NotNull] TypeDefinition classDefinition, [CanBeNull] MethodDefinition customGetHashCode)
+        {
+            if (customGetHashCode != null)
+            {
+                if (customGetHashCode.ReturnType != _moduleDefinition.TypeSystem.Int32)
+                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must have a return type of {typeof(int)}!", customGetHashCode);
+
+                if ((customGetHashCode.Parameters.Count != 0))
+                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must have no parameters!", customGetHashCode);
+
+                if (customGetHashCode.IsAbstract || customGetHashCode.IsStatic)
+                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must not be abstract!", customGetHashCode);
+            }
+        }
+
+        private void VerifyCustomEqualsSignature([NotNull] TypeDefinition classDefinition, [CanBeNull] MethodDefinition customEquals)
+        {
+            if (customEquals != null)
+            {
+                if (customEquals.ReturnType != _moduleDefinition.TypeSystem.Boolean)
+                    throw new WeavingException($"Custom equals method in class {classDefinition} must have a return type of {typeof(bool)}!", customEquals);
+
+                if ((customEquals.Parameters.Count != 1) || (customEquals.Parameters[0].ParameterType.Resolve() != classDefinition))
+                    throw new WeavingException($"Custom equals method in class {classDefinition} must have one parameter of type {classDefinition}!", customEquals);
+
+                if (customEquals.IsAbstract || customEquals.IsStatic)
+                    throw new WeavingException($"Custom equals method in class {classDefinition} must not be a non-abstract member method!", customEquals);
+            }
         }
 
         private (MethodDefinition equals, MethodDefinition getHashCode) GetBaseEqualsAndHashCode([NotNull] TypeDefinition classDefinition)
