@@ -184,8 +184,3 @@ internal static class <HashCode>
     }
 }
 ```
-
-
-## Icon
-
-Icon courtesy of [The Noun Project](http://thenounproject.com)
