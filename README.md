@@ -3,7 +3,7 @@ TODO: [![NuGet Status](http://img.shields.io/nuget/v/Equatable.Fody.svg?style=fl
 
 ## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
 
-TODO: ![Icon](https://raw.github.com/Equatable.Fody/master/Icons/package_icon.png)
+![Icon](Assets/icon.png)
 
 Generate the Equals, GetHashCode and operators methods from properties or fields explicitly decorated with the `[Equals]` Attribute.
 
