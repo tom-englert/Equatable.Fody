@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Equatable.Fody", "Equatable.Fody\Equatable.Fody.csproj", "{C7A72DAC-75AC-4C7A-B6F5-2DFF34B40116}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget", "NuGet\Nuget.csproj", "{878E96F1-3F27-4969-AC21-A66C7FA1ADF2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{59ACF1B9-0CB8-4673-9E00-E742E2616959} = {59ACF1B9-0CB8-4673-9E00-E742E2616959}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B3C4B812-EFBB-4261-BF94-7BFC57CFAA9F}"
 EndProject
@@ -32,6 +35,7 @@ Global
 		{C7A72DAC-75AC-4C7A-B6F5-2DFF34B40116}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7A72DAC-75AC-4C7A-B6F5-2DFF34B40116}.Release|Any CPU.Build.0 = Release|Any CPU
 		{878E96F1-3F27-4969-AC21-A66C7FA1ADF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878E96F1-3F27-4969-AC21-A66C7FA1ADF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{878E96F1-3F27-4969-AC21-A66C7FA1ADF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{878E96F1-3F27-4969-AC21-A66C7FA1ADF2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B3C4B812-EFBB-4261-BF94-7BFC57CFAA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
