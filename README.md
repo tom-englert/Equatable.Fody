@@ -1,7 +1,4 @@
-TODO: [![NuGet Status](http://img.shields.io/nuget/v/Equatable.Fody.svg?style=flat)](https://www.nuget.org/packages/Equatable.Fody/)
-
-
-## This is an add-in for [Fody](https://github.com/Fody/Fody/) 
+### This is an add-in for [Fody](https://github.com/Fody/Fody/) [![NuGet Status](http://img.shields.io/nuget/v/Equatable.Fody.svg?style=flat)](https://www.nuget.org/packages/Equatable.Fody/) ![badge](https://tom-englert.visualstudio.com/_apis/public/build/definitions/75bf84d2-d359-404a-a712-07c9f693f635/16/badge) 
 
 ![Icon](Assets/Icon.png)
 
@@ -12,14 +9,14 @@ This add in is inspired by [Equals.Fody](https://github.com/Fody/Equals/), but u
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage).
 
 
-## The nuget package
+### The nuget package
 
-TODO: https://nuget.org/packages/Equatable.Fody/
+https://nuget.org/packages/Equatable.Fody/
 
     PM> Install-Package Equatable.Fody
 
 
-## Your Code
+### Your Code
 
 ```C#
 public class Point
@@ -57,7 +54,7 @@ public class CustomGetHashCode
 }
 ```
 
-## What gets compiled
+### What gets compiled
 
 ```C
 public class Point : IEquatable<Point>
