@@ -39,6 +39,8 @@
 
         public ModuleWeaver()
         {
+            CosturaUtility.Initialize();
+
             LogDebug = LogInfo = LogWarning = LogError = _ => { };
             LogErrorPoint = (_, __) => { };
             ModuleDefinition = ModuleDefinition.CreateModule("empty", ModuleKind.Dll);
