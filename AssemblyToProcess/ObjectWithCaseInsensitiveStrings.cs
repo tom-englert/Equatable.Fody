@@ -9,6 +9,7 @@
 
     using Target = ObjectWithCaseInsensitiveStrings;
 
+    [ImplementsEquatable]
     internal class ObjectWithCaseInsensitiveStrings
     {
         [Equals(StringComparison.OrdinalIgnoreCase)]

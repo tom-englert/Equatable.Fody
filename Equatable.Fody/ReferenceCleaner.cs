@@ -1,22 +1,21 @@
 ﻿// ReSharper disable PossibleNullReferenceException
 // ReSharper disable AssignNullToNotNullAttribute
 
-using System.Collections.Generic;
-using System.Linq;
-
-using JetBrains.Annotations;
-
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
-
 namespace Equatable.Fody
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using JetBrains.Annotations;
+
+    using Mono.Cecil;
+
     internal class ReferenceCleaner
     {
         [NotNull, ItemNotNull]
         private static readonly HashSet<string> _attributesToRemove = new HashSet<string>
         {
+            AttributeNames.ImplementsEquatable,
             AttributeNames.Equals,
             AttributeNames.CustomEquals,
             AttributeNames.CustomGetHashCode

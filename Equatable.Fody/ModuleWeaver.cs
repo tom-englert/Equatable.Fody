@@ -25,6 +25,9 @@
         public Action<string> LogError { get; set; }
 
         [NotNull]
+        public Action<string, SequencePoint> LogWarningPoint { get; set; }
+
+        [NotNull]
         public Action<string, SequencePoint> LogErrorPoint { get; set; }
 
         // An instance of Mono.Cecil.ModuleDefinition for processing
@@ -42,7 +45,7 @@
             CosturaUtility.Initialize();
 
             LogDebug = LogInfo = LogWarning = LogError = _ => { };
-            LogErrorPoint = (_, __) => { };
+            LogErrorPoint = LogWarningPoint = (_, __) => { };
             ModuleDefinition = ModuleDefinition.CreateModule("empty", ModuleKind.Dll);
             AssemblyResolver = new DefaultAssemblyResolver();
         }
@@ -70,9 +73,16 @@
             LogInfo(message);
         }
 
-        void ILogger.LogWarning(string message)
+        void ILogger.LogWarning(string message, SequencePoint sequencePoint)
         {
-            LogWarning(message);
+            if (sequencePoint != null)
+            {
+                LogWarningPoint(message, sequencePoint);
+            }
+            else
+            {
+                LogWarning(message);
+            }
         }
 
         void ILogger.LogError(string message, SequencePoint sequencePoint)
@@ -85,14 +95,6 @@
             {
                 LogError(message);
             }
-        }
-
-        void ILogger.LogError(string message, MethodReference method)
-        {
-            if (method == null)
-                LogError(message);
-            else
-                ((ILogger) this).LogError(message, ModuleDefinition.SymbolReader?.Read(method.Resolve()).SequencePoints?.FirstOrDefault());
         }
     }
 }

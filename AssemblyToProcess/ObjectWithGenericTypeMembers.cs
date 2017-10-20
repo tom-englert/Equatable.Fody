@@ -9,6 +9,7 @@
     
     using Target = ObjectWithGenericTypeMembers;
 
+    // [ImplementsEquatable] => show a warning, if not annotated.
     internal class ObjectWithGenericTypeMembers
     {
         [Equals]

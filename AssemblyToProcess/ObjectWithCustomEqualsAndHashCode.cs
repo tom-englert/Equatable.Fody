@@ -9,6 +9,7 @@
 
     using Target = ObjectWithCustomEqualsAndHashCode;
 
+    [ImplementsEquatable]
     internal class ObjectWithCustomEqualsAndHashCode
     {
         [Equals]

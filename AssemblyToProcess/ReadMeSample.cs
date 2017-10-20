@@ -4,6 +4,7 @@
 
     using Equatable;
 
+    [ImplementsEquatable]
     public class Point
     {
         [Equals]
@@ -21,6 +22,7 @@
         }
     }
 
+    [ImplementsEquatable]
     public class CustomGetHashCode
     {
         [Equals]

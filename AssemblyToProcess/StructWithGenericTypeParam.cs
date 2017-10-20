@@ -9,6 +9,7 @@
 
     using Target = StructWithGenericTypeParam<string, ObjectWithValueTypeMembers>;
 
+    [ImplementsEquatable]
     internal struct StructWithGenericTypeParam<T1, T2>
     {
         [Equals]
@@ -21,6 +22,7 @@
         public Tuple<int, T2> Property2 { get; set; }
     }
 
+    [ImplementsEquatable] // Give a warning that no member is annotated with an equals-attribute.
     internal struct StructWithGenericTypeParamRef<T1, T2> : IEquatable<StructWithGenericTypeParamRef<T1, T2>>
     {
         public string _field;

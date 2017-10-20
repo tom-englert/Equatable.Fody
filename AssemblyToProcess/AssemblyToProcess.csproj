@@ -57,6 +57,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BareObject.cs" />
     <Compile Include="HashCode.cs" />
+    <Compile Include="ObjectsWithErrors.cs" />
     <Compile Include="ObjectWithCaseInsensitiveStrings.cs" />
     <Compile Include="ObjectWithCustomValueTypeMembers.cs" />
     <Compile Include="ObjectWithGenericTypeMembers.cs" />

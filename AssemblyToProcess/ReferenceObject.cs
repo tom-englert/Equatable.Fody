@@ -99,6 +99,7 @@
         }
     }
 
+    [ImplementsEquatable]
     class WeavedReferenceObject
     {
         [Equals]

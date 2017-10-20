@@ -11,6 +11,7 @@
     {
         using Target = ObjectWithGenericTypeParam<string, ObjectWithValueTypeMembers>;
 
+        [ImplementsEquatable]
         internal class ObjectWithGenericTypeParam<T1, T2>
         {
             [Equals]
@@ -125,6 +126,7 @@
 
         using Target = DerivedObjectWithGenericParam<ObjectWithValueTypeMembers>;
 
+        [ImplementsEquatable]
         internal class DerivedObjectWithGenericParam<T3>
             : ObjectWithGenericTypeParam<string, T3>
         {

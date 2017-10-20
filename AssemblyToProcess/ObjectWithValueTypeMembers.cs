@@ -9,6 +9,7 @@
 
     using Target = ObjectWithValueTypeMembers;
 
+    [ImplementsEquatable]
     internal class ObjectWithValueTypeMembers
     {
         [Equals]

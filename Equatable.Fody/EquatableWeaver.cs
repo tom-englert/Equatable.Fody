@@ -49,9 +49,9 @@
             _moduleDefinition = moduleWeaver.ModuleDefinition;
             _systemReferences = moduleWeaver.SystemReferences;
             var hashCodeMethod = InjectStaticHashCodeClass(_moduleDefinition);
-            _aggregateHashCodeMethod = InjectAggregate(hashCodeMethod);
-            _getHashCode = InjectGetHashCode(hashCodeMethod, _systemReferences);
-            _getStringHashCode = InjectGetStringHashCode(hashCodeMethod, _systemReferences);
+            _aggregateHashCodeMethod = InjectAggregateMethod(hashCodeMethod);
+            _getHashCode = InjectGetHashCodeMethod(hashCodeMethod, _systemReferences);
+            _getStringHashCode = InjectGetStringHashCodeMethod(hashCodeMethod, _systemReferences);
         }
 
         public void Execute()
@@ -68,13 +68,32 @@
                     .Where(member => member.EqualsAttribute != null)
                     .ToArray();
 
+                var classHasImplementEqualityAttribute = classDefinition.CustomAttributes.GetAttribute(AttributeNames.ImplementsEquatable) != null;
                 var customEquals = classDefinition.Methods.FirstOrDefault(m => m.CustomAttributes.GetAttribute(AttributeNames.CustomEquals) != null);
                 var customGetHashCode = classDefinition.Methods.FirstOrDefault(m => m.CustomAttributes.GetAttribute(AttributeNames.CustomGetHashCode) != null);
 
                 if (!membersToCompare.Any() && (customEquals == null) && (customGetHashCode == null))
+                {
+                    if (classHasImplementEqualityAttribute)
+                    {
+                        _logger.LogError($"Class {classDefinition} has the {AttributeNames.ImplementsEquatable} attribute, but no member is marked with a member attribute.", classDefinition.GetEntryPoint());
+                    }
                     continue;
+                }
 
-                InjectEquatable(classDefinition, membersToCompare, customEquals, customGetHashCode);
+                if (!classHasImplementEqualityAttribute)
+                {
+                    _logger.LogWarning($"Class {classDefinition} has members marked with equality attributes, but the class has not {AttributeNames.ImplementsEquatable} attribute. It's recommended to add the {AttributeNames.ImplementsEquatable}.", classDefinition.GetEntryPoint());
+                }
+
+                try
+                {
+                    InjectEquatable(classDefinition, membersToCompare, customEquals, customGetHashCode);
+                }
+                catch (WeavingException ex)
+                {
+                    _logger.LogError(ex.Message, ex.SequencePoint);
+                }
             }
 
             foreach (var action in _postProcessActions)
@@ -94,7 +113,7 @@
         }
 
         [NotNull]
-        private static MethodDefinition InjectAggregate([NotNull] TypeDefinition type)
+        private static MethodDefinition InjectAggregateMethod([NotNull] TypeDefinition type)
         {
             /*
             static int Aggregate(int hash1, int hash2)
@@ -128,7 +147,7 @@
         }
 
         [NotNull]
-        private static MethodDefinition InjectGetHashCode([NotNull] TypeDefinition type, [NotNull] SystemReferences systemReferences)
+        private static MethodDefinition InjectGetHashCodeMethod([NotNull] TypeDefinition type, [NotNull] SystemReferences systemReferences)
         {
             var typeSystem = type.Module.TypeSystem;
             var method = new MethodDefinition("GetHashCode", MethodAttributes.Static | MethodAttributes.HideBySig, typeSystem.Int32);
@@ -156,7 +175,7 @@
         }
 
         [NotNull]
-        private static MethodDefinition InjectGetStringHashCode([NotNull] TypeDefinition type, [NotNull] SystemReferences systemReferences)
+        private static MethodDefinition InjectGetStringHashCodeMethod([NotNull] TypeDefinition type, [NotNull] SystemReferences systemReferences)
         {
             var typeSystem = type.Module.TypeSystem;
             var method = new MethodDefinition("GetStringHashCode", MethodAttributes.Static | MethodAttributes.HideBySig, typeSystem.Int32);
@@ -191,22 +210,23 @@
             VerifyCustomEqualsSignature(classDefinition, customEquals);
             VerifyCustomGetHashCodeSignature(classDefinition, customGetHashCode);
 
+            if (classDefinition.Interfaces.Any(i => i.InterfaceType.Resolve().FullName == typeof(IEquatable<>).FullName))
+                throw new WeavingException($"Class {classDefinition} already implements {typeof(IEquatable<>)}", classDefinition.GetEntryPoint());
+
             classDefinition.Interfaces.Add(new InterfaceImplementation(_systemReferences.IEquatable.MakeGenericInstanceType(classDefinition.ReferenceFrom(classDefinition))));
 
-            var methods = classDefinition.Methods;
-
             var internalEqualsMethod = CreateInternalEqualsMethod(classDefinition, membersToCompare, customEquals);
-            methods.Add(internalEqualsMethod);
+            classDefinition.AddMethod(internalEqualsMethod);
 
             var equalsTypeMethod = CreateTypedEqualsMethod(classDefinition, internalEqualsMethod);
-            methods.Add(equalsTypeMethod);
+            classDefinition.AddMethod(equalsTypeMethod);
 
             var getHashCodeMethod = CreateGetHashCode(classDefinition, membersToCompare, customGetHashCode);
-            methods.Add(getHashCodeMethod);
+            classDefinition.AddMethod(getHashCodeMethod);
 
-            methods.Add(CreateObjectEqualsOverrideMethod(classDefinition, equalsTypeMethod));
-            methods.Add(CreateEqualityOperator(classDefinition, internalEqualsMethod));
-            methods.Add(CreateInequalityOperator(classDefinition, internalEqualsMethod));
+            classDefinition.AddMethod(CreateObjectEqualsOverrideMethod(classDefinition, equalsTypeMethod));
+            classDefinition.AddMethod(CreateEqualityOperator(classDefinition, internalEqualsMethod));
+            classDefinition.AddMethod(CreateInequalityOperator(classDefinition, internalEqualsMethod));
         }
 
         private void VerifyCustomGetHashCodeSignature([NotNull] TypeDefinition classDefinition, [CanBeNull] MethodDefinition customGetHashCode)
@@ -214,13 +234,13 @@
             if (customGetHashCode != null)
             {
                 if (customGetHashCode.ReturnType != _moduleDefinition.TypeSystem.Int32)
-                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must have a return type of {typeof(int)}!", customGetHashCode);
+                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must have a return type of {typeof(int)}!", customGetHashCode.GetEntryPoint());
 
                 if ((customGetHashCode.Parameters.Count != 0))
-                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must have no parameters!", customGetHashCode);
+                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must have no parameters!", customGetHashCode.GetEntryPoint());
 
                 if (customGetHashCode.IsAbstract || customGetHashCode.IsStatic)
-                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must not be abstract!", customGetHashCode);
+                    throw new WeavingException($"Custom get hash code method in class {classDefinition} must not be abstract!", customGetHashCode.GetEntryPoint());
             }
         }
 
@@ -229,13 +249,13 @@
             if (customEquals != null)
             {
                 if (customEquals.ReturnType != _moduleDefinition.TypeSystem.Boolean)
-                    throw new WeavingException($"Custom equals method in class {classDefinition} must have a return type of {typeof(bool)}!", customEquals);
+                    throw new WeavingException($"Custom equals method in class {classDefinition} must have a return type of {typeof(bool)}!", customEquals.GetEntryPoint());
 
                 if ((customEquals.Parameters.Count != 1) || (customEquals.Parameters[0].ParameterType.Resolve() != classDefinition))
-                    throw new WeavingException($"Custom equals method in class {classDefinition} must have one parameter of type {classDefinition}!", customEquals);
+                    throw new WeavingException($"Custom equals method in class {classDefinition} must have one parameter of type {classDefinition}!", customEquals.GetEntryPoint());
 
                 if (customEquals.IsAbstract || customEquals.IsStatic)
-                    throw new WeavingException($"Custom equals method in class {classDefinition} must not be a non-abstract member method!", customEquals);
+                    throw new WeavingException($"Custom equals method in class {classDefinition} must not be a non-abstract member method!", customEquals.GetEntryPoint());
             }
         }
 

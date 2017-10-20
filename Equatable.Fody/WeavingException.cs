@@ -5,16 +5,17 @@
     using JetBrains.Annotations;
 
     using Mono.Cecil;
+    using Mono.Cecil.Cil;
 
     internal class WeavingException : Exception
     {
-        public WeavingException([NotNull] string message, [CanBeNull] MethodReference method = null)
+        public WeavingException([NotNull] string message, [CanBeNull] SequencePoint sequencePoint = null)
             : base(message)
         {
-            Method = method;
+            SequencePoint = sequencePoint;
         }
 
         [CanBeNull]
-        public MethodReference Method { get; }
+        public SequencePoint SequencePoint { get; }
     }
 }

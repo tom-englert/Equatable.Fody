@@ -29,6 +29,7 @@
         }
     }
 
+    [ImplementsEquatable]
     class ReferenceObjectSimple1
     {
         [Equals]

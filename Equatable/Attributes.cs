@@ -3,6 +3,15 @@
     using System;
 
     /// <summary>
+    /// Apply this attribute to a class that should have <see cref="IEquatable{T}"/> auto-implemented. You need to additionally mark the members that make up equality for this type with the <see cref="EqualsAttribute"/>, <see cref="CustomEqualsAttribute"/> and/or <see cref="CustomGetHashCodeAttribute"/>.
+    /// See <see href="https://github.com/tom-englert/Equatable.Fody"/> for details.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public sealed class ImplementsEquatableAttribute : Attribute
+    {
+    }
+
+    /// <summary>
     /// Apply this attribute to all properties or fields that should be tested for equality when auto-implementing <see cref="IEquatable{T}"/> for the declaring type.
     /// See <see href="https://github.com/tom-englert/Equatable.Fody"/> for details.
     /// </summary>

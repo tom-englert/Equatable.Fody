@@ -46,6 +46,7 @@
         }
     }
 
+    [ImplementsEquatable]
     struct WeavedReferenceStruct
     {
         [Equals]

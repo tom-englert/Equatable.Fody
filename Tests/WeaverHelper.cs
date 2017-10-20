@@ -77,6 +77,9 @@
 
                 weavingTask.LogErrorPoint += WeavingTask_LogErrorPoint;
                 weavingTask.LogError += WeavingTask_LogError;
+                weavingTask.LogWarningPoint += WeavingTask_LogErrorPoint;
+                weavingTask.LogWarning += WeavingTask_LogError;
+
                 weavingTask.LogInfo += WeavingTask_LogInfo;
                 weavingTask.LogDebug += WeavingTask_LogDebug;
 
