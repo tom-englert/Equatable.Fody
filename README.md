@@ -19,6 +19,7 @@ https://nuget.org/packages/Equatable.Fody/
 ### Your Code
 
 ```C#
+[ImplementsEquatable]
 public class Point
 {
     [Equals]
@@ -36,6 +37,7 @@ public class Point
     }
 }
 
+[ImplementsEquatable]
 public class CustomGetHashCode
 {
     [Equals]
