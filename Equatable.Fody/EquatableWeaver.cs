@@ -207,6 +207,8 @@
 
         private void InjectEquatable([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] ICollection<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEquals, [CanBeNull] MethodDefinition customGetHashCode)
         {
+            _logger.LogInfo($"Weaving IEquatable into {classDefinition}");
+
             VerifyCustomEqualsSignature(classDefinition, customEquals);
             VerifyCustomGetHashCodeSignature(classDefinition, customGetHashCode);
 
