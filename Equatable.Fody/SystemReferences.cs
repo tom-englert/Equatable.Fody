@@ -1,9 +1,12 @@
 ﻿namespace Equatable.Fody
 {
     using System;
+    using System.CodeDom.Compiler;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Runtime.CompilerServices;
 
     using JetBrains.Annotations;
 
@@ -17,11 +20,6 @@
         {
             var coreTypes = new CoreTypes(moduleDefinition, assemblyResolver);
 
-            //GetFieldFromHandle = coreTypes.GetMethod<FieldInfo, RuntimeFieldHandle>(nameof(FieldInfo.GetFieldFromHandle));
-            //PropertyInfoType = coreTypes.GetType<PropertyInfo>();
-            //GetTypeFromHandle = coreTypes.GetMethod<Type, RuntimeTypeHandle>(nameof(Type.GetTypeFromHandle));
-            //GetPropertyInfo = coreTypes.GetMethod<Type, string>(nameof(Type.GetProperty));
-
             IEquatable = coreTypes.GetType(typeof(IEquatable<>));
             StringEquals = coreTypes.GetMethod<string, string, string, StringComparison>(nameof(string.Equals));
             ObjectEquals = coreTypes.GetMethod<object, object, object>(nameof(object.Equals));
@@ -30,6 +28,11 @@
             StringComparer = coreTypes.GetType<StringComparer>();
             StringComparerGetHashCode = coreTypes.GetMethod<StringComparer, string>(nameof(StringComparer.GetHashCode));
             StringComparerEquals = coreTypes.GetMethod<StringComparer, string, string>(nameof(StringComparer.Equals));
+
+            GeneratedCodeAttributeCtor = coreTypes.GetMethod<GeneratedCodeAttribute, string, string>(".ctor");
+            DebuggerNonUserCodeAttributeCtor = coreTypes.GetMethod<DebuggerNonUserCodeAttribute>(".ctor");
+
+            TypeSystem = moduleDefinition.TypeSystem;
         }
 
         class CoreTypes
@@ -42,7 +45,7 @@
             public CoreTypes([NotNull] ModuleDefinition moduleDefinition, [NotNull] IAssemblyResolver assemblyResolver)
             {
                 _moduleDefinition = moduleDefinition;
-                var assemblies = new[] { "mscorlib", "System.Reflection", "System.Runtime" };
+                var assemblies = new[] { "mscorlib", "System", "System.Reflection", "System.Runtime", "System.Diagnostics.Tools" };
                 _types = assemblies.SelectMany(assembly => GetTypes(assemblyResolver, assembly)).ToArray();
             }
 
@@ -95,15 +98,8 @@
             }
         }
 
-
-        //[NotNull]
-        //public MethodReference GetTypeFromHandle { get; }
-        //[NotNull]
-        //public TypeReference PropertyInfoType { get; }
-        //[NotNull]
-        //public MethodReference GetFieldFromHandle { get; }
-        //[NotNull]
-        //public MethodReference GetPropertyInfo { get; }
+        [NotNull]
+        public TypeSystem TypeSystem { get; }
 
         [NotNull]
         public TypeReference IEquatable { get; }
@@ -125,6 +121,12 @@
 
         [NotNull]
         public MethodReference StringComparerEquals { get; }
+
+        [NotNull]
+        public MethodReference GeneratedCodeAttributeCtor { get; }
+
+        [NotNull]
+        public MethodReference DebuggerNonUserCodeAttributeCtor { get; }
 
         [NotNull, ItemNotNull]
         private static IEnumerable<TypeDefinition> GetTypes([NotNull] IAssemblyResolver assemblyResolver, [NotNull] string name)

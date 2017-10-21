@@ -103,9 +103,11 @@
         }
 
         [NotNull]
-        private static TypeDefinition InjectStaticHashCodeClass([NotNull] ModuleDefinition moduleDefinition)
+        private TypeDefinition InjectStaticHashCodeClass([NotNull] ModuleDefinition moduleDefinition)
         {
             var type = new TypeDefinition("", "<HashCode>", TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit, moduleDefinition.TypeSystem.Object);
+
+            type.MarkAsComplierGenerated(_systemReferences);
 
             moduleDefinition.Types.Add(type);
 
@@ -141,6 +143,8 @@
                 Instruction.Create(OpCodes.Ret)
             );
 
+            method.Body.Optimize();
+
             type.Methods.Add(method);
 
             return method;
@@ -168,6 +172,8 @@
                 Instruction.Create(OpCodes.Ret));
 
             instructions.Replace(c1, Instruction.Create(OpCodes.Brtrue_S, l1));
+
+            method.Body.Optimize();
 
             type.Methods.Add(method);
 
@@ -199,6 +205,8 @@
                 Instruction.Create(OpCodes.Ret));
 
             instructions.Replace(c1, Instruction.Create(OpCodes.Brtrue_S, l1));
+
+            method.Body.Optimize();
 
             type.Methods.Add(method);
 
@@ -292,6 +300,7 @@
         private MethodDefinition CreateInternalEqualsMethod([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEqualsMethod)
         {
             var method = new MethodDefinition("<InternalEquals>", MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static, _moduleDefinition.TypeSystem.Boolean);
+            method.MarkAsComplierGenerated(_systemReferences);
 
             var classReference = classDefinition.ReferenceFrom(classDefinition);
 
@@ -435,6 +444,8 @@
                     instructions.RemoveAt(index);
                     instructions.RemoveAt(index);
                 }
+
+                method.Body.Optimize();
             });
 
             return method;
@@ -444,6 +455,7 @@
         private MethodDefinition CreateTypedEqualsMethod([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition internalEqualsMethod)
         {
             var method = new MethodDefinition("Equals", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final, _moduleDefinition.TypeSystem.Boolean);
+            method.MarkAsComplierGenerated(_systemReferences);
 
             method.Parameters.Add(Parameter.Create("other", classDefinition.ReferenceFrom(classDefinition)));
             method.IsFinal = true;
@@ -484,6 +496,8 @@
 
             instructions.Add(Instruction.Create(OpCodes.Ret));
 
+            method.Body.Optimize();
+
             return method;
         }
 
@@ -491,6 +505,7 @@
         private MethodDefinition CreateObjectEqualsOverrideMethod([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition equalsTypeMethod)
         {
             var method = new MethodDefinition("Equals", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual, _moduleDefinition.TypeSystem.Boolean);
+            method.MarkAsComplierGenerated(_systemReferences);
 
             method.Parameters.Add(Parameter.Create("obj", _moduleDefinition.TypeSystem.Object));
 
@@ -531,6 +546,8 @@
 
             instructions.Add(Instruction.Create(OpCodes.Ret));
 
+            method.Body.Optimize();
+
             return method;
         }
 
@@ -538,6 +555,7 @@
         private MethodDefinition CreateEqualityOperator([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition internalEqualsMethod)
         {
             var method = new MethodDefinition("op_Equality", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static | MethodAttributes.SpecialName, _moduleDefinition.TypeSystem.Boolean);
+            method.MarkAsComplierGenerated(_systemReferences);
 
             var classReference = classDefinition.ReferenceFrom(classDefinition);
 
@@ -552,6 +570,8 @@
                 Instruction.Create(OpCodes.Ret)
             );
 
+            method.Body.Optimize();
+
             return method;
         }
 
@@ -559,6 +579,7 @@
         private MethodDefinition CreateInequalityOperator([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition internalEqualsMethod)
         {
             var method = new MethodDefinition("op_Inequality", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static | MethodAttributes.SpecialName, _moduleDefinition.TypeSystem.Boolean);
+            method.MarkAsComplierGenerated(_systemReferences);
 
             var typeReference = classDefinition.ReferenceFrom(classDefinition);
 
@@ -575,6 +596,8 @@
                 Instruction.Create(OpCodes.Ret)
             );
 
+            method.Body.Optimize();
+
             return method;
         }
 
@@ -582,6 +605,7 @@
         private MethodDefinition CreateGetHashCode([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customGetHashCode)
         {
             var method = new MethodDefinition("GetHashCode", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual, _moduleDefinition.TypeSystem.Int32);
+            method.MarkAsComplierGenerated(_systemReferences);
 
             var instructions = method.Body.Instructions;
 
@@ -655,6 +679,9 @@
                     instructions.InsertRange(ref index,
                         Instruction.Create(OpCodes.Call, _aggregateHashCodeMethod));
                 }
+
+               
+                method.Body.Optimize();
             });
 
             return method;

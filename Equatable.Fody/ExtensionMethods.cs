@@ -207,6 +207,21 @@
             type.Methods.Add(method);
         }
 
+        public static void MarkAsComplierGenerated([NotNull] this ICustomAttributeProvider target, [NotNull] SystemReferences systemReferences)
+        {
+            var assemblyName = typeof(ModuleWeaver).Assembly.GetName();
+            var version = assemblyName.Version.ToString();
+            var name = assemblyName.Name;
+
+            var complierGenerated = new CustomAttribute(systemReferences.GeneratedCodeAttributeCtor);
+            complierGenerated.ConstructorArguments.Add(new CustomAttributeArgument(systemReferences.TypeSystem.String, name));
+            complierGenerated.ConstructorArguments.Add(new CustomAttributeArgument(systemReferences.TypeSystem.String, version));
+
+            var debuggerNonUserCode = new CustomAttribute(systemReferences.DebuggerNonUserCodeAttributeCtor);
+
+            target.CustomAttributes.AddRange(complierGenerated, debuggerNonUserCode);
+        }
+
         [CanBeNull]
         public static SequencePoint GetEntryPoint([CanBeNull] this MethodReference method)
         {
