@@ -316,10 +316,27 @@
 
             _postProcessActions.Add(() =>
             {
-
                 var returnFalseLabel = instructions[0];
 
                 var index = 0;
+
+                if (!classDefinition.IsValueType)
+                {
+                    Instruction c1, l1;
+
+                    instructions.InsertRange(ref index,
+                        Instruction.Create(OpCodes.Ldarg_0),
+                        c1 = Instruction.Create(OpCodes.Nop),
+                        Instruction.Create(OpCodes.Ldarg_1),
+                        Instruction.Create(OpCodes.Ldnull),
+                        Instruction.Create(OpCodes.Ceq),
+                        Instruction.Create(OpCodes.Ret),
+
+                        l1 = Instruction.Create(OpCodes.Ldarg_1),
+                        Instruction.Create(OpCodes.Brfalse, returnFalseLabel));
+
+                    instructions.Replace(c1, Instruction.Create(OpCodes.Brtrue, l1));
+                }
 
                 var baseEqualsMethod = GetBaseEqualsAndHashCode(classDefinition).equals;
                 if (baseEqualsMethod != null)
@@ -472,26 +489,10 @@
             }
             else
             {
-                Instruction c1, c2, l1, l2;
-
                 instructions.AddRange(
-                    Instruction.Create(OpCodes.Ldarg_1),
-                    c1 = Instruction.Create(OpCodes.Nop),
-                    Instruction.Create(OpCodes.Ldc_I4_0),
-                    Instruction.Create(OpCodes.Ret),
-
-                    l1 = Instruction.Create(OpCodes.Ldarg_0),
-                    Instruction.Create(OpCodes.Ldarg_1),
-                    c2 = Instruction.Create(OpCodes.Nop),
-                    Instruction.Create(OpCodes.Ldc_I4_1),
-                    Instruction.Create(OpCodes.Ret),
-
-                    l2 = Instruction.Create(OpCodes.Ldarg_0),
+                    Instruction.Create(OpCodes.Ldarg_0),
                     Instruction.Create(OpCodes.Ldarg_1),
                     Instruction.Create(OpCodes.Call, internalEqualsMethod.ReferenceFrom(classDefinition)));
-
-                instructions.Replace(c1, Instruction.Create(OpCodes.Brtrue_S, l1));
-                instructions.Replace(c2, Instruction.Create(OpCodes.Bne_Un_S, l2));
             }
 
             instructions.Add(Instruction.Create(OpCodes.Ret));
@@ -680,7 +681,7 @@
                         Instruction.Create(OpCodes.Call, _aggregateHashCodeMethod));
                 }
 
-               
+
                 method.Body.Optimize();
             });
 

@@ -169,5 +169,19 @@
             Assert.AreNotEqual(left, right);
             Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
         }
+
+        [Export]
+        public static void IsDifferentFromNull()
+        {
+            var left = new Target
+            {
+                _field = "test",
+                Property1 = 5,
+                Property2 = 3.5,
+                Property3 = false
+            };
+
+            Assert.AreNotEqual(left, null);
+        }
     }
 }

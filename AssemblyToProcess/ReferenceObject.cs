@@ -68,6 +68,11 @@
 
         private static bool InternalEquals(ReferenceObject left, ReferenceObject right)
         {
+            if (left == null)
+                return right == null;
+            if (right == null)
+                return false;
+
             return left._bool == right._bool
                    && left._double == right._double;
         }
