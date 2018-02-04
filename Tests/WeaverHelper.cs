@@ -54,9 +54,9 @@
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             // ReSharper disable once PossibleNullReferenceException
-            var projectDir = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, $@"..\..\..\{assemblyName}"));
+            var projectDir = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, $@"..\..\..\..\{assemblyName}"));
 
-            var binaryDir = Path.Combine(projectDir, $@"bin\{Configuration}");
+            var binaryDir = Path.Combine(projectDir, "bin", Configuration, "Net46");
             OriginalAssemblyPath = Path.Combine(binaryDir, $@"{assemblyName}.dll");
 
             NewAssemblyPath = OriginalAssemblyPath.Replace(".dll", "2.dll");
