@@ -1,22 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Equatable.Fody", "Equatable.Fody\Equatable.Fody.csproj", "{C7A72DAC-75AC-4C7A-B6F5-2DFF34B40116}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Equatable.Fody", "Equatable.Fody\Equatable.Fody.csproj", "{C7A72DAC-75AC-4C7A-B6F5-2DFF34B40116}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget", "NuGet\Nuget.csproj", "{878E96F1-3F27-4969-AC21-A66C7FA1ADF2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{59ACF1B9-0CB8-4673-9E00-E742E2616959} = {59ACF1B9-0CB8-4673-9E00-E742E2616959}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B3C4B812-EFBB-4261-BF94-7BFC57CFAA9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{B3C4B812-EFBB-4261-BF94-7BFC57CFAA9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{270EBFBC-0421-4522-AA40-84D66238A19F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{270EBFBC-0421-4522-AA40-84D66238A19F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Equatable", "Equatable\Equatable.csproj", "{01389226-C922-4138-A470-C9C491577467}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Equatable.portable", "Equatable\Equatable.portable.csproj", "{59ACF1B9-0CB8-4673-9E00-E742E2616959}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4F188C1-0FC6-4F7D-BC8D-C8C299784042}"
 	ProjectSection(SolutionItems) = preProject
@@ -24,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		Version.cs = Version.cs
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetStandardSmokeTest", "NetStandardSmokeTest\NetStandardSmokeTest.csproj", "{B5FF1497-E462-4979-A3E2-D9913F9BE444}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +48,10 @@ Global
 		{01389226-C922-4138-A470-C9C491577467}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01389226-C922-4138-A470-C9C491577467}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01389226-C922-4138-A470-C9C491577467}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59ACF1B9-0CB8-4673-9E00-E742E2616959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59ACF1B9-0CB8-4673-9E00-E742E2616959}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59ACF1B9-0CB8-4673-9E00-E742E2616959}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59ACF1B9-0CB8-4673-9E00-E742E2616959}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5FF1497-E462-4979-A3E2-D9913F9BE444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5FF1497-E462-4979-A3E2-D9913F9BE444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5FF1497-E462-4979-A3E2-D9913F9BE444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5FF1497-E462-4979-A3E2-D9913F9BE444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
