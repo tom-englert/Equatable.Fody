@@ -45,14 +45,14 @@
             public CoreTypes([NotNull] ModuleDefinition moduleDefinition, [NotNull] IAssemblyResolver assemblyResolver)
             {
                 _moduleDefinition = moduleDefinition;
-                var assemblies = new[] { "mscorlib", "System", "System.Reflection", "System.Runtime", "System.Diagnostics.Tools" };
+                var assemblies = new[] { "mscorlib", "System", "System.Reflection", "System.Runtime", "System.Diagnostics.Tools", "netstandard", "System.Runtime.Extensions", "System.Diagnostics.Debug" };
                 _types = assemblies.SelectMany(assembly => GetTypes(assemblyResolver, assembly)).ToArray();
             }
 
             [NotNull]
             public TypeDefinition GetTypeDefinition([NotNull] Type type)
             {
-                return _types.First(x => x.FullName == type.FullName);
+                return _types.FirstOrDefault(x => x.FullName == type.FullName) ?? throw new InvalidOperationException($"Type {type} not found");
             }
 
             [NotNull]
