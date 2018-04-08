@@ -15,7 +15,7 @@
     <language>en-US</language>
     <tags>ILWeaving, Fody, Cecil, Equals, Equality, IEquality, GetHashCode</tags>
     <dependencies>
-      <dependency id="Fody" version="[2.3.0, 3.0.0)"/>
+      <dependency id="Fody" version="[3.0, 4.0)"/>
     </dependencies>
   </metadata>
 </package>

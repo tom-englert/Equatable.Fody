@@ -28,13 +28,14 @@
     <ProjectReference Include="..\Equatable.Fody\Equatable.Fody.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FodyCecil" Version="2.3.25">
+    <PackageReference Include="FodyCecil" Version="3.0.1">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="FodyHelpers" Version="3.0.1" />
     <PackageReference Include="JetBrains.Annotations" Version="11.1.0" />
     <PackageReference Include="NUnit" Version="3.8.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
-    <PackageReference Include="TomsToolbox.Core" Version="1.0.64" />
+    <PackageReference Include="TomsToolbox.Core" Version="1.0.67" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
@@ -45,5 +46,8 @@
       <Link>Equatable.Test.ruleset</Link>
     </None>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>

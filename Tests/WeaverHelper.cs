@@ -18,7 +18,7 @@
 
     using TomsToolbox.Core;
 
-    internal class WeaverHelper : DefaultAssemblyResolver
+    internal class WeaverHelper
     {
         [NotNull]
         private static readonly Dictionary<string, WeaverHelper> _cache = new Dictionary<string, WeaverHelper>();
@@ -61,18 +61,13 @@
 
             NewAssemblyPath = OriginalAssemblyPath.Replace(".dll", "2.dll");
 
-            //RegisterAssembly(AssemblyDefinition.ReadAssembly(Path.Combine(binaryDir, "TestLibrary.dll")));
-            //RegisterAssembly(AssemblyDefinition.ReadAssembly(Path.Combine(binaryDir, "Equatable.dll")));
-
-            using (var moduleDefinition = ModuleDefinition.ReadModule(OriginalAssemblyPath, new ReaderParameters(ReadingMode.Immediate) { ReadSymbols = true, AssemblyResolver = this }))
+            using (var moduleDefinition = ModuleDefinition.ReadModule(OriginalAssemblyPath, new ReaderParameters(ReadingMode.Immediate) { ReadSymbols = true }))
             {
                 Debug.Assert(moduleDefinition != null, "moduleDefinition != null");
 
                 var weavingTask = new ModuleWeaver
                 {
                     ModuleDefinition = moduleDefinition,
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    AssemblyResolver = moduleDefinition.AssemblyResolver
                 };
 
                 weavingTask.LogErrorPoint += WeavingTask_LogErrorPoint;
