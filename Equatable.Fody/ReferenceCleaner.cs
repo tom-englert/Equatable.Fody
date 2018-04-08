@@ -74,21 +74,5 @@ namespace Equatable.Fody
                 customAttributes.Remove(customAttribute);
             }
         }
-
-        public void RemoveReferences()
-        {
-            var referenceToRemove = _moduleDefinition.AssemblyReferences.FirstOrDefault(x => x.Name == "Equatable");
-            if (referenceToRemove == null)
-            {
-                _logger.LogInfo("\tNo reference to 'Equatable' found. References not modified.");
-                return;
-            }
-
-            _logger.LogInfo("\tRemoving reference to 'Equatable'.");
-            if (!_moduleDefinition.AssemblyReferences.Remove(referenceToRemove))
-            {
-                _logger.LogWarning("\tCould not remove all references to 'Equatable'.");
-            }
-        }
     }
 }

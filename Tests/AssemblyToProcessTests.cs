@@ -2,7 +2,6 @@
 {
     using System;
     using System.ComponentModel.Composition.Hosting;
-    using System.IO;
 
     using JetBrains.Annotations;
 
@@ -19,9 +18,6 @@
             var catalog = new AggregateCatalog();
             var container = new CompositionContainer(catalog);
 
-            var directory = Path.GetDirectoryName(_weaverHelper.Assembly.Location);
-
-            catalog.Catalogs.Add(new AssemblyCatalog(Path.Combine(directory, "Equatable.dll")));
             catalog.Catalogs.Add(new AssemblyCatalog(_weaverHelper.Assembly));
 
             var actions = container.GetExportedValues<Action>();

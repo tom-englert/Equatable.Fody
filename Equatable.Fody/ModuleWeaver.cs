@@ -26,6 +26,7 @@
         public override void Execute()
         {
             new EquatableWeaver(this).Execute();
+            CleanReferences();
         }
 
         public override IEnumerable<string> GetAssembliesForScanning()
@@ -34,6 +35,11 @@
         }
 
         public override bool ShouldCleanReference => true;
+
+        private void CleanReferences()
+        {
+            new ReferenceCleaner(ModuleDefinition, this).RemoveAttributes();
+        }
 
         void ILogger.LogDebug(string message)
         {
