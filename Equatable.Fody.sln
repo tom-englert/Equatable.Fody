@@ -15,12 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Equatable", "Equatable\Equa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4F188C1-0FC6-4F7D-BC8D-C8C299784042}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README.md = README.md
-		Version.cs = Version.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetStandardSmokeTest", "NetStandardSmokeTest\NetStandardSmokeTest.csproj", "{B5FF1497-E462-4979-A3E2-D9913F9BE444}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetStandardSmokeTest", "NetStandardSmokeTest\NetStandardSmokeTest.csproj", "{B5FF1497-E462-4979-A3E2-D9913F9BE444}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

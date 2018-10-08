@@ -5,14 +5,23 @@
 
     using JetBrains.Annotations;
 
-    using NUnit.Framework;
+    using Xunit;
+    using Xunit.Abstractions;
 
     public class AssemblyToProcessTests
     {
         [NotNull]
         private readonly WeaverHelper _weaverHelper = WeaverHelper.Create();
+        [NotNull]
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        [Test]
+
+        public AssemblyToProcessTests([NotNull] ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
         public void ExternalTest()
         {
             var catalog = new AggregateCatalog();
@@ -26,7 +35,7 @@
             {
                 var method = action.Method;
 
-                TestContext.Out.WriteLine($"Run {method.DeclaringType.Name}.{method.Name}");
+                _testOutputHelper.WriteLine($"Run {method.DeclaringType.Name}.{method.Name}");
                 action();
             }
         }

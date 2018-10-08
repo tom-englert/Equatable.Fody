@@ -5,7 +5,7 @@
 
     using Equatable;
 
-    using NUnit.Framework;
+    using Xunit;
 
     using Target = ObjectWithCaseInsensitiveStrings;
 
@@ -23,7 +23,7 @@
         {
             var target = new Target();
 
-            Assert.IsTrue(target is IEquatable<Target>);
+            Assert.True(target is IEquatable<Target>);
         }
 
         [Export]
@@ -41,9 +41,9 @@
                 Property2 = "a string",
             };
 
-            Assert.AreEqual(left, right);
-            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
-            Assert.AreEqual(HashCode.Aggregate(0, HashCode.Aggregate(StringComparer.OrdinalIgnoreCase.GetHashCode(left.Property1), left.Property2.GetHashCode())), left.GetHashCode());
+            Assert.Equal(left, right);
+            Assert.Equal(left.GetHashCode(), right.GetHashCode());
+            Assert.Equal(HashCode.Aggregate(0, HashCode.Aggregate(StringComparer.OrdinalIgnoreCase.GetHashCode(left.Property1), left.Property2.GetHashCode())), left.GetHashCode());
         }
 
         [Export]
@@ -61,9 +61,9 @@
                 Property2 = "a string",
             };
 
-            Assert.AreEqual(left, right);
-            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
-            Assert.AreEqual(HashCode.Aggregate(0, HashCode.Aggregate(StringComparer.OrdinalIgnoreCase.GetHashCode(left.Property1), left.Property2.GetHashCode())), left.GetHashCode());
+            Assert.Equal(left, right);
+            Assert.Equal(left.GetHashCode(), right.GetHashCode());
+            Assert.Equal(HashCode.Aggregate(0, HashCode.Aggregate(StringComparer.OrdinalIgnoreCase.GetHashCode(left.Property1), left.Property2.GetHashCode())), left.GetHashCode());
         }
 
         [Export]
@@ -81,8 +81,8 @@
                 Property2 = "A string",
             };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.NotEqual(left, right);
+            Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -100,8 +100,8 @@
                 Property2 = "b string",
             };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.NotEqual(left, right);
+            Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -119,8 +119,8 @@
                 Property2 = "c string",
             };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.NotEqual(left, right);
+            Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
         }
     }
 }

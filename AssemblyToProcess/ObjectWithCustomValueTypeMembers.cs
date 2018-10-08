@@ -5,7 +5,7 @@
 
     using Equatable;
 
-    using NUnit.Framework;
+    using Xunit;
 
     using Target = ObjectWithCustomValueTypeMembers;
 
@@ -23,7 +23,7 @@
         {
             var target = new Target();
 
-            Assert.IsTrue(target is IEquatable<Target>);
+            Assert.True(target is IEquatable<Target>);
         }
 
         [Export]
@@ -41,8 +41,8 @@
                 Property1 = new ReferenceStruct { Property1 = 5, Property2 = "test" },
             };
 
-            Assert.AreEqual(left, right);
-            Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.Equal(left, right);
+            Assert.Equal(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -60,8 +60,8 @@
                 Property1 = new ReferenceStruct { Property1 = 6, Property2 = "test" },
             };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.NotEqual(left, right);
+            Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
         }
 
         [Export]
@@ -79,8 +79,8 @@
                 Property1 = new ReferenceStruct { Property1 = 5, Property2 = "Test" },
             };
 
-            Assert.AreNotEqual(left, right);
-            Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+            Assert.NotEqual(left, right);
+            Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     using System.ComponentModel.Composition;
 
-    using NUnit.Framework;
+    using Xunit;
 
     internal class BareObject
     {
@@ -12,7 +12,7 @@
             var left = new BareObject();
             var right = left;
 
-            Assert.AreEqual(left, right);
+            Assert.Equal(left, right);
         }
 
         [Export]
@@ -21,13 +21,13 @@
             var left = new BareObject();
             var right = new BareObject();
 
-            Assert.AreNotEqual(left, right);
+            Assert.NotEqual(left, right);
         }
 
         // [Export]
         public static void ForceFail()
         {
-            Assert.Inconclusive("Forced error.");
+            Assert.False(true);
         }
     }
 }

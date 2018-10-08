@@ -1,44 +1,40 @@
-﻿namespace Tests
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+using Fody;
+
+using JetBrains.Annotations;
+
+using Mono.Cecil;
+
+using TomsToolbox.Core;
+
+namespace Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
-    using System.Linq;
-    using System.Reflection;
 
     using Equatable.Fody;
 
-    using JetBrains.Annotations;
-
-    using Mono.Cecil;
     using Mono.Cecil.Cil;
 
-    using NUnit.Framework;
-
-    using TomsToolbox.Core;
-
-    internal class WeaverHelper
+    internal class WeaverHelper : DefaultAssemblyResolver
     {
         [NotNull]
         private static readonly Dictionary<string, WeaverHelper> _cache = new Dictionary<string, WeaverHelper>();
 
         [NotNull]
-        public Assembly Assembly { get; }
-        [NotNull]
-        public string NewAssemblyPath { get; }
-        [NotNull]
-        public string OriginalAssemblyPath { get; }
-        [NotNull, ItemNotNull]
-        public IList<string> Errors { get; } = new List<string>();
-        [NotNull, ItemNotNull]
-        public IList<string> Messages { get; } = new List<string>();
+        private readonly TestResult _testResult;
 
-#if (!DEBUG)
-        private const string Configuration = "Release";
-#else
-        private const string Configuration = "Debug";
-#endif
+        [NotNull]
+        public Assembly Assembly => _testResult.Assembly;
+
+        [NotNull, ItemNotNull]
+        public IEnumerable<string> Errors => _testResult.Errors.Select(e => LogError(e.Text, e.SequencePoint));
+
+        [NotNull, ItemNotNull]
+        public IEnumerable<string> Messages => _testResult.Messages.Select(m => LogInfo(m));
+        
 
         [NotNull]
         public static WeaverHelper Create([NotNull] string assemblyName = "AssemblyToProcess")
@@ -52,69 +48,22 @@
 
         private WeaverHelper([NotNull] string assemblyName)
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            // ReSharper disable once PossibleNullReferenceException
-            var projectDir = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, $@"..\..\..\..\{assemblyName}"));
-
-            var binaryDir = Path.Combine(projectDir, "bin", Configuration, "Net46");
-            OriginalAssemblyPath = Path.Combine(binaryDir, $@"{assemblyName}.dll");
-
-            NewAssemblyPath = OriginalAssemblyPath.Replace(".dll", "2.dll");
-
-            using (var moduleDefinition = ModuleDefinition.ReadModule(OriginalAssemblyPath, new ReaderParameters(ReadingMode.Immediate) { ReadSymbols = true }))
-            {
-                Debug.Assert(moduleDefinition != null, "moduleDefinition != null");
-
-                var weavingTask = new ModuleWeaver
-                {
-                    ModuleDefinition = moduleDefinition,
-                };
-
-                weavingTask.LogErrorPoint += WeavingTask_LogErrorPoint;
-                weavingTask.LogError += WeavingTask_LogError;
-                weavingTask.LogWarningPoint += WeavingTask_LogErrorPoint;
-                weavingTask.LogWarning += WeavingTask_LogError;
-
-                weavingTask.LogInfo += WeavingTask_LogInfo;
-                weavingTask.LogDebug += WeavingTask_LogDebug;
-
-                weavingTask.Execute();
-
-                var assemblyNameDefinition = moduleDefinition.Assembly?.Name;
-                Debug.Assert(assemblyNameDefinition != null, "assemblyNameDefinition != null");
-
-                // ReSharper disable once PossibleNullReferenceException
-                assemblyNameDefinition.Version = new Version(0, 2, 0, assemblyNameDefinition.Version.Revision);
-                moduleDefinition.Write(NewAssemblyPath, new WriterParameters { WriteSymbols = true });
-            }
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assembly = Assembly.LoadFile(NewAssemblyPath);
+            _testResult = new ModuleWeaver().ExecuteTestRun(assemblyName + ".dll", true, null, null, null, new[] { "0x80131869" });
         }
 
-        private void WeavingTask_LogInfo([NotNull] string message)
+        private string LogInfo([NotNull] LogMessage message)
         {
-            Messages.Add("I:" + message);
+            return message.MessageImportance + ": "+ message.Text;
         }
 
-        private void WeavingTask_LogDebug([NotNull] string message)
-        {
-            Messages.Add("D:" + message);
-        }
-
-        private void WeavingTask_LogError([NotNull] string message)
-        {
-            Errors.Add(message);
-        }
-
-        private void WeavingTask_LogErrorPoint([NotNull] string message, [CanBeNull] SequencePoint sequencePoint)
+        private string LogError([NotNull] string message, [CanBeNull] SequencePoint sequencePoint)
         {
             if (sequencePoint != null)
             {
                 message = message + $"\r\n\t({sequencePoint.Document.Url}@{sequencePoint.StartLine}:{sequencePoint.StartColumn}\r\n\t => {File.ReadAllLines(sequencePoint.Document.Url).Skip(sequencePoint.StartLine - 1).FirstOrDefault()}";
             }
 
-            Errors.Add(message);
+            return message;
         }
     }
 }

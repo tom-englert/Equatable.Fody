@@ -6,41 +6,41 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-using NUnit.Framework;
+using Xunit;
 
 using Tests;
 
-[TestFixture]
+using Xunit.Abstractions;
+
 public class WeaverTests
 {
     [NotNull]
     private readonly WeaverHelper _weaverHelper = WeaverHelper.Create();
+    [NotNull]
+    private readonly ITestOutputHelper _testOutputHelper;
 
-    [Test]
+    public WeaverTests([NotNull] ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
+    [Fact]
     public void OutputWeaverErrors()
     {
         foreach (var message in _weaverHelper.Errors)
         {
-            TestContext.Out.WriteLine(message);
+            _testOutputHelper.WriteLine(message);
         }
 
-        Assert.AreEqual(6, _weaverHelper.Errors.Count);
+        Assert.Equal(6, _weaverHelper.Errors.Count());
     }
 
-    [Test]
+    [Fact]
     public void OutputWeaverMessages()
     {
         foreach (var message in _weaverHelper.Messages)
         {
-            TestContext.Out.WriteLine(message);
+            _testOutputHelper.WriteLine(message);
         }
     }
-
-#if (DEBUG)
-    [Test]
-    public void PeVerify()
-    {
-        Verifier.Verify(_weaverHelper.OriginalAssemblyPath, _weaverHelper.NewAssemblyPath);
-    }
-#endif
 }

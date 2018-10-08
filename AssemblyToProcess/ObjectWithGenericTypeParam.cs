@@ -5,7 +5,7 @@
 
     using Equatable;
 
-    using NUnit.Framework;
+    using Xunit;
 
     namespace Base
     {
@@ -31,7 +31,7 @@
             {
                 var target = new Target();
 
-                Assert.IsTrue(target is IEquatable<Target>);
+                Assert.True(target is IEquatable<Target>);
             }
 
             [Export]
@@ -51,8 +51,8 @@
                     Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
                 };
 
-                Assert.AreEqual(left, right);
-                Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.Equal(left, right);
+                Assert.Equal(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -72,8 +72,8 @@
                     Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 4 }),
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -93,8 +93,8 @@
                     Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 4 }),
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -114,8 +114,8 @@
                     Property2 = new Tuple<int, ObjectWithValueTypeMembers>(2, new ObjectWithValueTypeMembers { Property1 = 3 }),
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
         }
     }
@@ -123,6 +123,8 @@
     namespace Derived
     {
         using AssemblyToProcess.Base;
+
+        using Xunit;
 
         using Target = DerivedObjectWithGenericParam<ObjectWithValueTypeMembers>;
 
@@ -142,7 +144,7 @@
             {
                 var target = new Target();
 
-                Assert.IsTrue(target is IEquatable<Target>);
+                Assert.True(target is IEquatable<Target>);
             }
 
             [Export]
@@ -164,8 +166,8 @@
                     Property3 = "x"
                 };
 
-                Assert.AreEqual(left, right);
-                Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.Equal(left, right);
+                Assert.Equal(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -187,8 +189,8 @@
                     Property3 = "y"
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -210,8 +212,8 @@
                     Property3 = "x"
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -233,8 +235,8 @@
                     Property3 = "x"
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
 
             [Export]
@@ -256,8 +258,8 @@
                     Property3 = "x"
                 };
 
-                Assert.AreNotEqual(left, right);
-                Assert.AreNotEqual(left.GetHashCode(), right.GetHashCode());
+                Assert.NotEqual(left, right);
+                Assert.NotEqual(left.GetHashCode(), right.GetHashCode());
             }
         }
     }
