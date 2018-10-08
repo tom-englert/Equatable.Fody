@@ -32,7 +32,18 @@ public class WeaverTests
             _testOutputHelper.WriteLine(message);
         }
 
-        Assert.Equal(6, _weaverHelper.Errors.Count());
+        Assert.Equal(3, _weaverHelper.Errors.Count());
+    }
+
+    [Fact]
+    public void OutputWeaverWarnings()
+    {
+        foreach (var message in _weaverHelper.Warnings)
+        {
+            _testOutputHelper.WriteLine(message);
+        }
+
+        Assert.Equal(3, _weaverHelper.Warnings.Count());
     }
 
     [Fact]
@@ -42,5 +53,7 @@ public class WeaverTests
         {
             _testOutputHelper.WriteLine(message);
         }
+
+        Assert.Equal(16, _weaverHelper.Messages.Count());
     }
 }

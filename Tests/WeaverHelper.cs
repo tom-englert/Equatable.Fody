@@ -12,6 +12,7 @@ using TomsToolbox.Core;
 
 namespace Tests
 {
+    using System;
     using System.IO;
 
     using Equatable.Fody;
@@ -30,10 +31,13 @@ namespace Tests
         public Assembly Assembly => _testResult.Assembly;
 
         [NotNull, ItemNotNull]
-        public IEnumerable<string> Errors => _testResult.Errors.Select(e => LogError(e.Text, e.SequencePoint));
+        public IEnumerable<string> Errors => _testResult.Errors.Select(e => LogError(e));
 
         [NotNull, ItemNotNull]
         public IEnumerable<string> Messages => _testResult.Messages.Select(m => LogInfo(m));
+
+        [NotNull, ItemNotNull]
+        public IEnumerable<string> Warnings => _testResult.Warnings.Select(w => LogError(w));
         
 
         [NotNull]
@@ -56,8 +60,11 @@ namespace Tests
             return message.MessageImportance + ": "+ message.Text;
         }
 
-        private string LogError([NotNull] string message, [CanBeNull] SequencePoint sequencePoint)
+        private string LogError(SequencePointMessage e)
         {
+            var message = e.Text;
+            var sequencePoint = e.SequencePoint;
+
             if (sequencePoint != null)
             {
                 message = message + $"\r\n\t({sequencePoint.Document.Url}@{sequencePoint.StartLine}:{sequencePoint.StartColumn}\r\n\t => {File.ReadAllLines(sequencePoint.Document.Url).Skip(sequencePoint.StartLine - 1).FirstOrDefault()}";

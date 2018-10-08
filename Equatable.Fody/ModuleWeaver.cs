@@ -18,11 +18,6 @@
         [NotNull]
         internal SystemReferences SystemReferences => new SystemReferences(ModuleDefinition, ModuleDefinition.AssemblyResolver);
 
-        public ModuleWeaver()
-        {
-            CosturaUtility.Initialize();
-        }
-
         public override void Execute()
         {
             new EquatableWeaver(this).Execute();

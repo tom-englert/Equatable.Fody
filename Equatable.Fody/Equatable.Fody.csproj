@@ -1,29 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\Equatable.Fody.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="3.1.4">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Fody" Version="3.2.9">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="FodyHelpers" Version="3.2.9" />
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <Target Name="Postbuild" AfterTargets="Build">
-    <Message Text="Test" />
+  <Target Name="Postbuild" AfterTargets="Build" Condition="$(TargetFramework)=='net46'">
     <MakeDir Directories="$(SolutionDir)Tools" />
-    <Copy SourceFiles="$(TargetDir)Equatable.Fody.dll" DestinationFolder="$(SolutionDir)Tools" />
-    <Copy SourceFiles="$(TargetDir)Equatable.Fody.pdb" DestinationFolder="$(SolutionDir)Tools" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="$(SolutionDir)Tools" />
+    <Copy SourceFiles="$(TargetDir)$(ProjectName).pdb" DestinationFolder="$(SolutionDir)Tools" />
   </Target>
 </Project>

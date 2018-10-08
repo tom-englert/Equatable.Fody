@@ -269,12 +269,18 @@
             }
         }
 
-        private (MethodDefinition equals, MethodDefinition getHashCode) GetBaseEqualsAndHashCode([NotNull] TypeDefinition classDefinition)
+        private struct EqualityMethods
+        {
+            public MethodDefinition EqualsMethod { get; set; }
+            public MethodDefinition GetHashCodeMethod { get; set; }
+        }
+
+        private EqualityMethods GetBaseEqualsAndHashCode([NotNull] TypeDefinition classDefinition)
         {
             var baseType = classDefinition.BaseType.Resolve();
 
             if ((baseType.FullName == typeof(object).FullName) || (baseType.FullName == typeof(ValueType).FullName))
-                return (null, null);
+                return default(EqualityMethods);
 
             var baseEquals = baseType.TryFindMethod("Equals", baseType);
             var baseGetHashCode = baseType.TryFindMethod("GetHashCode");
@@ -284,16 +290,16 @@
                 if (baseGetHashCode != null)
                 {
                     _logger.LogWarning($"{baseType} overrides GetHashCode, but does not override Equals!");
-                    return (null, null);
+                    return default(EqualityMethods);
                 }
             }
             else if (baseGetHashCode == null)
             {
                 _logger.LogWarning($"{baseType} overrides Equals, but does not override GetHashCode!");
-                return (null, null);
+                return default(EqualityMethods);
             }
 
-            return (baseEquals, baseGetHashCode);
+            return new EqualityMethods { EqualsMethod = baseEquals, GetHashCodeMethod = baseGetHashCode };
         }
 
         [NotNull]
@@ -338,7 +344,7 @@
                     instructions.Replace(c1, Instruction.Create(OpCodes.Brtrue, l1));
                 }
 
-                var baseEqualsMethod = GetBaseEqualsAndHashCode(classDefinition).equals;
+                var baseEqualsMethod = GetBaseEqualsAndHashCode(classDefinition).EqualsMethod;
                 if (baseEqualsMethod != null)
                 {
                     instructions.InsertRange(ref index,
@@ -618,7 +624,7 @@
             {
                 var index = 1;
 
-                var baseGetHashCode = GetBaseEqualsAndHashCode(classDefinition).getHashCode;
+                var baseGetHashCode = GetBaseEqualsAndHashCode(classDefinition).GetHashCodeMethod;
                 if (baseGetHashCode != null)
                 {
                     instructions.InsertRange(ref index,
