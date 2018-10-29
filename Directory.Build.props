@@ -12,13 +12,8 @@
     <PackageLicenseUrl>https://raw.github.com/tom-englert/Equatable.Fody/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/tom-englert/Equatable.Fody</PackageProjectUrl>
     <PackageIconUrl>https://github.com/tom-englert/Equatable.Fody/blob/master/Assets/Icon.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/tom-englert/Equatable.Fody.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageOutputPath>$(SolutionDir)Deploy</PackageOutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <LanguageTargets>$(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\Microsoft.CSharp.targets</LanguageTargets>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
@@ -34,14 +29,14 @@
     <DefineConstants>$(DefineConstants);PORTABLE</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='portable40-net40+sl5+win8+wp8+wpa81'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'portable40-net40+sl5+win8+wp8+wpa81'">
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="*" PrivateAssets="All" />
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="*" PrivateAssets="All" />
+    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
