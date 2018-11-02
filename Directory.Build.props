@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Copyright>Copyright © tom-englert.de 2017-2018. Distributed under the MIT License.</Copyright>
     <Product>Equatable.Fody</Product>
-    <Version>1.4</Version>
+    <Version>1.5</Version>
     <PackageTags>ILWeaving, Fody, Cecil, AOP, Equals, Equatable</PackageTags>
     <Description>Generate the Equals, GetHashCode and operators methods from properties or fields decorated with the [Equals] Attribute.</Description>
   </PropertyGroup>
