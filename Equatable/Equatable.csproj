@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="FodyPackaging" Version="3.2.16" PrivateAssets="All" />
-    <PackageReference Include="Fody" Version="3.2.16" />
+    <PackageReference Include="Fody" Version="3.2.16" PrivateAssets="None" />
   </ItemGroup>
 
   <Target Name="ClearDeploy" BeforeTargets="GenerateNuspec">
