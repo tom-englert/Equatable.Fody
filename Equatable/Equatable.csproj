@@ -4,7 +4,7 @@
   <PropertyGroup>
     <TargetFrameworks>net40-client;portable40-net40+sl5+win8+wp8+wpa81;netstandard1.0;netstandard2.0</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Equatable.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Common.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
