@@ -46,8 +46,10 @@
         public EquatableWeaver([NotNull] ModuleWeaver moduleWeaver)
         {
             _logger = moduleWeaver;
+            // ReSharper disable once AssignNullToNotNullAttribute
             _moduleDefinition = moduleWeaver.ModuleDefinition;
             _systemReferences = moduleWeaver.SystemReferences;
+            // ReSharper disable once AssignNullToNotNullAttribute
             var hashCodeMethod = InjectStaticHashCodeClass(_moduleDefinition);
             _aggregateHashCodeMethod = InjectAggregateMethod(hashCodeMethod);
             _getHashCode = InjectGetHashCodeMethod(hashCodeMethod, _systemReferences);

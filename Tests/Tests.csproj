@@ -2,29 +2,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <CodeAnalysisRuleSet>..\Equatable.Test.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyToProcess\AssemblyToProcess.csproj" />
     <ProjectReference Include="..\Equatable.Fody\Equatable.Fody.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FodyHelpers" Version="3.2.9" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0">
+    <PackageReference Include="FodyHelpers" Version="3.2.16" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="TomsToolbox.Core" Version="1.0.74" />
+    <PackageReference Include="TomsToolbox.Core" Version="1.0.75" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Equatable.Test.ruleset">
-      <Link>Equatable.Test.ruleset</Link>
-    </None>
     <None Include="app.config" />
   </ItemGroup>
 </Project>

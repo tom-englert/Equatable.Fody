@@ -1,4 +1,7 @@
-﻿namespace AssemblyToProcess
+﻿#pragma warning disable 169
+#pragma warning disable 649
+
+namespace AssemblyToProcess
 {
     using System;
 

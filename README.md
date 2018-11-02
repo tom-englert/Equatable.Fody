@@ -1,6 +1,7 @@
-### This is an add-in for [Fody](https://github.com/Fody/Fody/) [![NuGet Status](http://img.shields.io/nuget/v/Equatable.Fody.svg?style=flat)](https://www.nuget.org/packages/Equatable.Fody/) ![badge](https://tom-englert.visualstudio.com/_apis/public/build/definitions/75bf84d2-d359-404a-a712-07c9f693f635/16/badge) 
+### This is an add-in for [Fody](https://github.com/Fody/Fody/) [![NuGet Status](http://img.shields.io/nuget/v/Equatable.Fody.svg?style=flat)](https://www.nuget.org/packages/Equatable.Fody/) [![Build status](https://ci.appveyor.com/api/projects/status/7d90l86aaw7ke7eq?svg=true)](https://ci.appveyor.com/project/tom-englert/equatable-fody)
 
-![Icon](Assets/Icon.png)
+
+![Icon](Icon.png)
 
 Generate the Equals, GetHashCode and operators methods from properties or fields explicitly decorated with the `[Equals]` Attribute.
 
@@ -9,12 +10,16 @@ This add in is inspired by [Equals.Fody](https://github.com/Fody/Equals/), but u
 [Introduction to Fody](http://github.com/Fody/Fody/wiki/SampleUsage).
 
 
-### The nuget package
+### NuGet installation
 
-https://nuget.org/packages/Equatable.Fody/
+Install the [Equatable.Fody NuGet package](https://nuget.org/packages/Equatable.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
 
-    PM> Install-Package Equatable.Fody
+```
+PM> Install-Package Equatable.Fody
+PM> Update-Package Fody
+```
 
+The `Update-Package Fody` is required since NuGet always defaults to the oldest, and most buggy, version of any dependency.
 
 ### Your Code
 

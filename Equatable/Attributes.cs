@@ -22,6 +22,7 @@
         /// Initializes a new instance of the <see cref="EqualsAttribute"/> class.
         /// </summary>
         /// <param name="stringComparison">The string comparison.</param>
+        // ReSharper disable once UnusedParameter.Local
         public EqualsAttribute(StringComparison stringComparison = StringComparison.Ordinal)
         {
         }

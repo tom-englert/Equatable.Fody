@@ -2,6 +2,8 @@
 {
     using System;
 
+    using JetBrains.Annotations;
+
     /// <summary>
     /// Helper to generate hash codes
     /// </summary>
@@ -29,7 +31,7 @@
             return value.GetHashCode();
         }
 
-        public static int GetStringHashCode(string value, StringComparer comparer)
+        public static int GetStringHashCode(string value, [NotNull] StringComparer comparer)
         {
             if (value == null)
                 return 0;

@@ -2,41 +2,13 @@
 <Project>
 
   <PropertyGroup>
-    <Authors>tom-englert</Authors>
-    <Company>tom-englert.de</Company>
     <Copyright>Copyright © tom-englert.de 2017-2018. Distributed under the MIT License.</Copyright>
     <Product>Equatable.Fody</Product>
     <Version>1.4</Version>
-    <PackageTags>ILWeaving, Fody, Cecil, Equals, Equatable</PackageTags>
+    <PackageTags>ILWeaving, Fody, Cecil, AOP, Equals, Equatable</PackageTags>
     <Description>Generate the Equals, GetHashCode and operators methods from properties or fields decorated with the [Equals] Attribute.</Description>
-    <PackageLicenseUrl>https://raw.github.com/tom-englert/Equatable.Fody/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/tom-englert/Equatable.Fody</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/tom-englert/Equatable.Fody/blob/master/Assets/Icon.png</PackageIconUrl>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageOutputPath>$(SolutionDir)Deploy</PackageOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40-client'">
-    <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>client</TargetFrameworkProfile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'portable40-net40+sl5+win8+wp8+wpa81'">
-    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
-    <DefineConstants>$(DefineConstants);PORTABLE</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'portable40-net40+sl5+win8+wp8+wpa81'">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
-  </ItemGroup>
+  <Import Project="Common.props" />
 
 </Project>
