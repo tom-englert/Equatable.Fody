@@ -8,8 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyPackaging" Version="3.2.16" PrivateAssets="All" />
-    <PackageReference Include="Fody" Version="3.2.16" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="4.2.1" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="4.2.1" PrivateAssets="None" />
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE" Link="LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

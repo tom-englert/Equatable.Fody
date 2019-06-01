@@ -181,7 +181,7 @@
                 Property3 = false
             };
 
-            Assert.NotEqual(left, null);
+            Assert.NotNull(left);
         }
     }
 }
