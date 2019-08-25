@@ -1,22 +1,18 @@
 ﻿namespace Equatable.Fody
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Xml.Linq;
 
     using global::Fody;
 
     using JetBrains.Annotations;
 
-    using Mono.Cecil;
     using Mono.Cecil.Cil;
 
     public class ModuleWeaver : BaseModuleWeaver, ILogger
     {
         // Will log an informational message to MSBuild
         [NotNull]
-        internal SystemReferences SystemReferences => new SystemReferences(ModuleDefinition, ModuleDefinition.AssemblyResolver);
+        internal SystemReferences SystemReferences => new SystemReferences(TypeSystem, ModuleDefinition, ModuleDefinition.AssemblyResolver);
 
         public override void Execute()
         {

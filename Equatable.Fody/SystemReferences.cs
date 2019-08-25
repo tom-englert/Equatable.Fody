@@ -6,7 +6,6 @@
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Runtime.CompilerServices;
 
     using JetBrains.Annotations;
 
@@ -16,7 +15,7 @@
     [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
     internal class SystemReferences
     {
-        public SystemReferences([NotNull] ModuleDefinition moduleDefinition, [NotNull] IAssemblyResolver assemblyResolver)
+        public SystemReferences(global::Fody.TypeSystem typeSystem, [NotNull] ModuleDefinition moduleDefinition, [NotNull] IAssemblyResolver assemblyResolver)
         {
             var coreTypes = new CoreTypes(moduleDefinition, assemblyResolver);
 
@@ -32,7 +31,7 @@
             GeneratedCodeAttributeCtor = coreTypes.GetMethod<GeneratedCodeAttribute, string, string>(".ctor");
             DebuggerNonUserCodeAttributeCtor = coreTypes.GetMethod<DebuggerNonUserCodeAttribute>(".ctor");
 
-            TypeSystem = moduleDefinition.TypeSystem;
+            TypeSystem = typeSystem;
         }
 
         class CoreTypes
@@ -99,7 +98,7 @@
         }
 
         [NotNull]
-        public TypeSystem TypeSystem { get; }
+        public global::Fody.TypeSystem TypeSystem { get; }
 
         [NotNull]
         public TypeReference IEquatable { get; }

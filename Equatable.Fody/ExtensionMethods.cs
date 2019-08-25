@@ -207,15 +207,15 @@
             type.Methods.Add(method);
         }
 
-        public static void MarkAsComplierGenerated([NotNull] this ICustomAttributeProvider target, [NotNull] SystemReferences systemReferences)
+        public static void MarkAsCompilerGenerated([NotNull] this ICustomAttributeProvider target, [NotNull] SystemReferences systemReferences)
         {
             var assemblyName = typeof(ModuleWeaver).Assembly.GetName();
             var version = assemblyName.Version.ToString();
             var name = assemblyName.Name;
 
             var complierGenerated = new CustomAttribute(systemReferences.GeneratedCodeAttributeCtor);
-            complierGenerated.ConstructorArguments.Add(new CustomAttributeArgument(systemReferences.TypeSystem.String, name));
-            complierGenerated.ConstructorArguments.Add(new CustomAttributeArgument(systemReferences.TypeSystem.String, version));
+            complierGenerated.ConstructorArguments.Add(new CustomAttributeArgument(systemReferences.TypeSystem.StringReference, name));
+            complierGenerated.ConstructorArguments.Add(new CustomAttributeArgument(systemReferences.TypeSystem.StringReference, version));
 
             var debuggerNonUserCode = new CustomAttribute(systemReferences.DebuggerNonUserCodeAttributeCtor);
 
