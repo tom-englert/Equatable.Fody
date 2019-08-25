@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Equatable\Equatable.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <WeaverFiles Include="$(SolutionDir)$(SolutionName)\bin\$(Configuration)\Net472\$(SolutionName).dll" />
+  </ItemGroup>
+
 </Project>
