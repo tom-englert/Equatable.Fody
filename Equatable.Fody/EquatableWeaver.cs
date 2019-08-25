@@ -50,22 +50,19 @@
         public EquatableWeaver([NotNull] ModuleWeaver moduleWeaver)
         {
             _logger = moduleWeaver;
-            // ReSharper disable once AssignNullToNotNullAttribute
+            _typeSystem = moduleWeaver.TypeSystem;
             _moduleDefinition = moduleWeaver.ModuleDefinition;
             _systemReferences = moduleWeaver.SystemReferences;
-            // ReSharper disable once AssignNullToNotNullAttribute
             var hashCodeMethod = InjectStaticHashCodeClass(_moduleDefinition);
             _aggregateHashCodeMethod = InjectAggregateMethod(hashCodeMethod);
             _getHashCode = InjectGetHashCodeMethod(hashCodeMethod, _systemReferences);
             _getStringHashCode = InjectGetStringHashCodeMethod(hashCodeMethod, _systemReferences);
-            _typeSystem = moduleWeaver.TypeSystem;
         }
 
         public void Execute()
         {
             var allTypes = _moduleDefinition.GetTypes();
 
-            // ReSharper disable once AssignNullToNotNullAttribute
             var allClasses = allTypes
                 .Where(type => type != null && type.IsClass && (type.BaseType != null));
 
@@ -247,7 +244,7 @@
         {
             if (customGetHashCode != null)
             {
-                if (customGetHashCode.ReturnType != _typeSystem.Int32Definition)
+                if (customGetHashCode.ReturnType.FullName != typeof(int).FullName)
                     throw new WeavingException($"Custom get hash code method in class {classDefinition} must have a return type of {typeof(int)}!", customGetHashCode.GetEntryPoint());
 
                 if ((customGetHashCode.Parameters.Count != 0))
@@ -262,7 +259,7 @@
         {
             if (customEquals != null)
             {
-                if (customEquals.ReturnType != _typeSystem.BooleanReference)
+                if (customEquals.ReturnType.FullName != typeof(bool).FullName)
                     throw new WeavingException($"Custom equals method in class {classDefinition} must have a return type of {typeof(bool)}!", customEquals.GetEntryPoint());
 
                 if ((customEquals.Parameters.Count != 1) || (customEquals.Parameters[0].ParameterType.Resolve() != classDefinition))

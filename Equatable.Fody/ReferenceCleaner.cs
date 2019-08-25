@@ -1,7 +1,4 @@
-﻿// ReSharper disable PossibleNullReferenceException
-// ReSharper disable AssignNullToNotNullAttribute
-
-namespace Equatable.Fody
+﻿namespace Equatable.Fody
 {
     using System.Collections.Generic;
     using System.Linq;

@@ -16,6 +16,8 @@
 
         public override void Execute()
         {
+            // System.Diagnostics.Debugger.Launch();
+
             new EquatableWeaver(this).Execute();
             CleanReferences();
         }

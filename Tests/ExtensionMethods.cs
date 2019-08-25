@@ -17,7 +17,6 @@ namespace Tests
 
                 var type = assembly.GetType(className, true);
 
-                // ReSharper disable AssignNullToNotNullAttribute
                 return Activator.CreateInstance(type, args);
             }
             finally
