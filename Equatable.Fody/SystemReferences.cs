@@ -7,15 +7,13 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
-    using JetBrains.Annotations;
-
     using Mono.Cecil;
 
     [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
     [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
     internal class SystemReferences
     {
-        public SystemReferences(global::Fody.TypeSystem typeSystem, [NotNull] ModuleDefinition moduleDefinition, [NotNull] IAssemblyResolver assemblyResolver)
+        public SystemReferences(global::Fody.TypeSystem typeSystem, ModuleDefinition moduleDefinition, IAssemblyResolver assemblyResolver)
         {
             var coreTypes = new CoreTypes(moduleDefinition, assemblyResolver);
 
@@ -36,99 +34,78 @@
 
         class CoreTypes
         {
-            [NotNull, ItemNotNull]
             private readonly TypeDefinition[] _types;
-            [NotNull]
-            private readonly ModuleDefinition _moduleDefinition;
+                private readonly ModuleDefinition _moduleDefinition;
 
-            public CoreTypes([NotNull] ModuleDefinition moduleDefinition, [NotNull] IAssemblyResolver assemblyResolver)
+            public CoreTypes(ModuleDefinition moduleDefinition, IAssemblyResolver assemblyResolver)
             {
                 _moduleDefinition = moduleDefinition;
                 var assemblies = new[] { "mscorlib", "System", "System.Reflection", "System.Runtime", "System.Diagnostics.Tools", "netstandard", "System.Runtime.Extensions", "System.Diagnostics.Debug" };
                 _types = assemblies.SelectMany(assembly => GetTypes(assemblyResolver, assembly)).ToArray();
             }
 
-            [NotNull]
-            public TypeDefinition GetTypeDefinition([NotNull] Type type)
+                public TypeDefinition GetTypeDefinition(Type type)
             {
                 return _types.FirstOrDefault(x => x.FullName == type.FullName) ?? throw new InvalidOperationException($"Type {type} not found");
             }
 
-            [NotNull]
-            public TypeDefinition GetTypeDefinition<T>()
+                public TypeDefinition GetTypeDefinition<T>()
             {
                 return GetTypeDefinition(typeof(T));
             }
 
-            [NotNull]
-            public TypeReference GetType(Type type)
+                public TypeReference GetType(Type type)
             {
                 return _moduleDefinition.ImportReference(GetTypeDefinition(type));
             }
 
-            [NotNull]
-            public TypeReference GetType<T>()
+                public TypeReference GetType<T>()
             {
                 return _moduleDefinition.ImportReference(GetTypeDefinition<T>());
             }
 
-            [NotNull]
-            public MethodReference GetMethod<T>([NotNull] string name, [NotNull, ItemNotNull] params Type[] parameters)
+                public MethodReference GetMethod<T>(string name, params Type[] parameters)
             {
                 return _moduleDefinition.ImportReference(GetTypeDefinition<T>().FindMethod(name, parameters));
             }
 
-            [NotNull]
-            public MethodReference GetMethod<T, TP1>([NotNull] string name)
+                public MethodReference GetMethod<T, TP1>(string name)
             {
                 return GetMethod<T>(name, typeof(TP1));
             }
 
-            [NotNull]
-            public MethodReference GetMethod<T, TP1, TP2>([NotNull] string name)
+                public MethodReference GetMethod<T, TP1, TP2>(string name)
             {
                 return GetMethod<T>(name, typeof(TP1), typeof(TP2));
             }
 
-            [NotNull]
-            public MethodReference GetMethod<T, TP1, TP2, TP3>([NotNull] string name)
+                public MethodReference GetMethod<T, TP1, TP2, TP3>(string name)
             {
                 return GetMethod<T>(name, typeof(TP1), typeof(TP2), typeof(TP3));
             }
         }
 
-        [NotNull]
         public global::Fody.TypeSystem TypeSystem { get; }
 
-        [NotNull]
         public TypeReference IEquatable { get; }
 
-        [NotNull]
         public MethodReference ObjectEquals { get; }
 
-        [NotNull]
         public MethodReference ObjectGetHashCode { get; }
 
-        [NotNull]
         public MethodReference StringEquals { get; }
 
-        [NotNull]
         public TypeReference StringComparer { get; }
 
-        [NotNull]
         public MethodReference StringComparerGetHashCode { get; }
 
-        [NotNull]
         public MethodReference StringComparerEquals { get; }
 
-        [NotNull]
         public MethodReference GeneratedCodeAttributeCtor { get; }
 
-        [NotNull]
         public MethodReference DebuggerNonUserCodeAttributeCtor { get; }
 
-        [NotNull, ItemNotNull]
-        private static IEnumerable<TypeDefinition> GetTypes([NotNull] IAssemblyResolver assemblyResolver, [NotNull] string name)
+        private static IEnumerable<TypeDefinition> GetTypes(IAssemblyResolver assemblyResolver, string name)
         {
             return assemblyResolver.Resolve(new AssemblyNameReference(name, null))?.MainModule.Types ?? Enumerable.Empty<TypeDefinition>();
         }

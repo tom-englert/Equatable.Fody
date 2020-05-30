@@ -1,7 +1,6 @@
 ﻿namespace AssemblyToProcess
 {
     using System;
-    using System.Globalization;
 
     using Equatable;
 

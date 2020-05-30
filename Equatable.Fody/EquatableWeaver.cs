@@ -4,23 +4,15 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using JetBrains.Annotations;
-
     using Mono.Cecil;
     using Mono.Cecil.Cil;
     using Mono.Cecil.Rocks;
 
-    using TypeSystem = global::Fody.TypeSystem;
-
     public class EquatableWeaver
     {
-        [NotNull]
         private readonly ILogger _logger;
-        [NotNull]
         private readonly ModuleDefinition _moduleDefinition;
-        [NotNull]
         private readonly SystemReferences _systemReferences;
-        [NotNull, ItemNotNull]
         private static readonly HashSet<string> _simpleTypes = new HashSet<string>(new[]
         {
             "System.Boolean",
@@ -36,18 +28,13 @@
             "System.Int16",
             "System.UInt16"
         });
-        [NotNull]
         private readonly MethodDefinition _aggregateHashCodeMethod;
-        [NotNull, ItemNotNull]
         private readonly IList<Action> _postProcessActions = new List<Action>();
-        [NotNull]
         private readonly MethodDefinition _getHashCode;
-        [NotNull]
         private readonly MethodDefinition _getStringHashCode;
-        [NotNull]
         private readonly global::Fody.TypeSystem _typeSystem;
 
-        public EquatableWeaver([NotNull] ModuleWeaver moduleWeaver)
+        public EquatableWeaver(ModuleWeaver moduleWeaver)
         {
             _logger = moduleWeaver;
             _typeSystem = moduleWeaver.TypeSystem;
@@ -106,8 +93,7 @@
             }
         }
 
-        [NotNull]
-        private TypeDefinition InjectStaticHashCodeClass([NotNull] ModuleDefinition moduleDefinition)
+        private TypeDefinition InjectStaticHashCodeClass(ModuleDefinition moduleDefinition)
         {
             var type = new TypeDefinition("", "<HashCode>", TypeAttributes.Class | TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit, _typeSystem.ObjectReference);
 
@@ -118,8 +104,7 @@
             return type;
         }
 
-        [NotNull]
-        private MethodDefinition InjectAggregateMethod([NotNull] TypeDefinition type)
+        private MethodDefinition InjectAggregateMethod(TypeDefinition type)
         {
             /*
             static int Aggregate(int hash1, int hash2)
@@ -153,8 +138,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition InjectGetHashCodeMethod([NotNull] TypeDefinition type, [NotNull] SystemReferences systemReferences)
+        private MethodDefinition InjectGetHashCodeMethod(TypeDefinition type, SystemReferences systemReferences)
         {
             var method = new MethodDefinition("GetHashCode", MethodAttributes.Static | MethodAttributes.HideBySig, _typeSystem.Int32Reference);
 
@@ -182,8 +166,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition InjectGetStringHashCodeMethod([NotNull] TypeDefinition type, [NotNull] SystemReferences systemReferences)
+        private MethodDefinition InjectGetStringHashCodeMethod(TypeDefinition type, SystemReferences systemReferences)
         {
             var method = new MethodDefinition("GetStringHashCode", MethodAttributes.Static | MethodAttributes.HideBySig, _typeSystem.Int32Reference);
 
@@ -214,7 +197,7 @@
             return method;
         }
 
-        private void InjectEquatable([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] ICollection<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEquals, [CanBeNull] MethodDefinition customGetHashCode)
+        private void InjectEquatable(TypeDefinition classDefinition, ICollection<MemberDefinition> membersToCompare, MethodDefinition? customEquals, MethodDefinition? customGetHashCode)
         {
             _logger.LogInfo($"Weaving IEquatable into {classDefinition}");
 
@@ -240,7 +223,7 @@
             classDefinition.AddMethod(CreateInequalityOperator(classDefinition, internalEqualsMethod));
         }
 
-        private void VerifyCustomGetHashCodeSignature([NotNull] TypeDefinition classDefinition, [CanBeNull] MethodDefinition customGetHashCode)
+        private void VerifyCustomGetHashCodeSignature(TypeDefinition classDefinition, MethodDefinition? customGetHashCode)
         {
             if (customGetHashCode != null)
             {
@@ -255,7 +238,7 @@
             }
         }
 
-        private void VerifyCustomEqualsSignature([NotNull] TypeDefinition classDefinition, [CanBeNull] MethodDefinition customEquals)
+        private void VerifyCustomEqualsSignature(TypeDefinition classDefinition, MethodDefinition? customEquals)
         {
             if (customEquals != null)
             {
@@ -272,11 +255,11 @@
 
         private struct EqualityMethods
         {
-            public MethodDefinition EqualsMethod { get; set; }
-            public MethodDefinition GetHashCodeMethod { get; set; }
+            public MethodDefinition? EqualsMethod { get; set; }
+            public MethodDefinition? GetHashCodeMethod { get; set; }
         }
 
-        private EqualityMethods GetBaseEqualsAndHashCode([NotNull] TypeDefinition classDefinition)
+        private EqualityMethods GetBaseEqualsAndHashCode(TypeDefinition classDefinition)
         {
             var baseType = classDefinition.BaseType.Resolve();
 
@@ -303,8 +286,7 @@
             return new EqualityMethods { EqualsMethod = baseEquals, GetHashCodeMethod = baseGetHashCode };
         }
 
-        [NotNull]
-        private MethodDefinition CreateInternalEqualsMethod([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customEqualsMethod)
+        private MethodDefinition CreateInternalEqualsMethod(TypeDefinition classDefinition, IEnumerable<MemberDefinition> membersToCompare, MethodDefinition? customEqualsMethod)
         {
             var method = new MethodDefinition("<InternalEquals>", MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.Static, _typeSystem.BooleanReference);
             method.MarkAsCompilerGenerated(_systemReferences);
@@ -374,9 +356,9 @@
 
                     if (memberType.FullName == typeof(string).FullName)
                     {
-                        var comparison = (StringComparison)(memberDefinition.EqualsAttribute.ConstructorArguments.Select(a => a.Value).FirstOrDefault() ?? default(StringComparison));
+                        var comparison = (StringComparison)(memberDefinition.EqualsAttribute?.ConstructorArguments.Select(a => a.Value).FirstOrDefault() ?? default(StringComparison));
                         var comparer = _systemReferences.StringComparer;
-                        var getComparerMethod = comparer.Resolve().Properties.FirstOrDefault(p => p.Name == comparison.ToString())?.GetMethod;
+                        var getComparerMethod = comparer.Resolve().Properties.Single(p => p.Name == comparison.ToString()).GetMethod;
 
                         instructions.InsertRange(ref index,
                             Instruction.Create(OpCodes.Call, getComparerMethod.ReferenceFrom(classDefinition)),
@@ -475,8 +457,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition CreateTypedEqualsMethod([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition internalEqualsMethod)
+        private MethodDefinition CreateTypedEqualsMethod(TypeDefinition classDefinition, MethodDefinition internalEqualsMethod)
         {
             var method = new MethodDefinition("Equals", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final, _typeSystem.BooleanReference);
             method.MarkAsCompilerGenerated(_systemReferences);
@@ -509,8 +490,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition CreateObjectEqualsOverrideMethod([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition equalsTypeMethod)
+        private MethodDefinition CreateObjectEqualsOverrideMethod(TypeDefinition classDefinition, MethodDefinition equalsTypeMethod)
         {
             var method = new MethodDefinition("Equals", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual, _typeSystem.BooleanReference);
             method.MarkAsCompilerGenerated(_systemReferences);
@@ -559,8 +539,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition CreateEqualityOperator([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition internalEqualsMethod)
+        private MethodDefinition CreateEqualityOperator(TypeDefinition classDefinition, MethodDefinition internalEqualsMethod)
         {
             var method = new MethodDefinition("op_Equality", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static | MethodAttributes.SpecialName, _typeSystem.BooleanReference);
             method.MarkAsCompilerGenerated(_systemReferences);
@@ -583,8 +562,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition CreateInequalityOperator([NotNull] TypeDefinition classDefinition, [NotNull] MethodDefinition internalEqualsMethod)
+        private MethodDefinition CreateInequalityOperator(TypeDefinition classDefinition, MethodDefinition internalEqualsMethod)
         {
             var method = new MethodDefinition("op_Inequality", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Static | MethodAttributes.SpecialName, _typeSystem.BooleanReference);
             method.MarkAsCompilerGenerated(_systemReferences);
@@ -609,8 +587,7 @@
             return method;
         }
 
-        [NotNull]
-        private MethodDefinition CreateGetHashCode([NotNull] TypeDefinition classDefinition, [NotNull, ItemNotNull] IEnumerable<MemberDefinition> membersToCompare, [CanBeNull] MethodDefinition customGetHashCode)
+        private MethodDefinition CreateGetHashCode(TypeDefinition classDefinition, IEnumerable<MemberDefinition> membersToCompare, MethodDefinition? customGetHashCode)
         {
             var method = new MethodDefinition("GetHashCode", MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual, _typeSystem.Int32Reference);
             method.MarkAsCompilerGenerated(_systemReferences);
@@ -650,9 +627,9 @@
 
                     if (memberType.FullName == typeof(string).FullName)
                     {
-                        var comparison = (StringComparison)memberDefinition.EqualsAttribute.ConstructorArguments.Select(a => a.Value).FirstOrDefault();
+                        var comparison = (StringComparison)(memberDefinition.EqualsAttribute?.ConstructorArguments.Select(a => a.Value).FirstOrDefault() ?? StringComparison.Ordinal);
                         var comparer = _systemReferences.StringComparer;
-                        var getComparerMethod = comparer.Resolve().Properties.FirstOrDefault(p => p.Name == comparison.ToString())?.GetMethod;
+                        var getComparerMethod = comparer.Resolve().Properties.Single(p => p.Name == comparison.ToString()).GetMethod;
 
                         instructions.InsertRange(ref index,
                             Instruction.Create(OpCodes.Ldarg_0),

@@ -2,20 +2,16 @@
 {
     using System;
 
-    using JetBrains.Annotations;
-
-    using Mono.Cecil;
     using Mono.Cecil.Cil;
 
     internal class WeavingException : Exception
     {
-        public WeavingException([NotNull] string message, [CanBeNull] SequencePoint sequencePoint = null)
+        public WeavingException(string message, SequencePoint? sequencePoint = null)
             : base(message)
         {
             SequencePoint = sequencePoint;
         }
 
-        [CanBeNull]
-        public SequencePoint SequencePoint { get; }
+        public SequencePoint? SequencePoint { get; }
     }
 }

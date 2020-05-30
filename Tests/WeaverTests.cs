@@ -1,25 +1,16 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-
-using JetBrains.Annotations;
-
-using Xunit;
+﻿using System.Linq;
 
 using Tests;
 
+using Xunit;
 using Xunit.Abstractions;
 
 public class WeaverTests
 {
-    [NotNull]
     private readonly WeaverHelper _weaverHelper = WeaverHelper.Create();
-    [NotNull]
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public WeaverTests([NotNull] ITestOutputHelper testOutputHelper)
+    public WeaverTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }

@@ -4,26 +4,23 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using JetBrains.Annotations;
-
     using Mono.Cecil;
     using Mono.Cecil.Cil;
     using Mono.Cecil.Rocks;
 
     internal static class ExtensionMethods
     {
-        [CanBeNull]
-        public static CustomAttribute GetAttribute([NotNull, ItemNotNull] this IEnumerable<CustomAttribute> attributes, [CanBeNull] string attributeName)
+        public static CustomAttribute? GetAttribute(this IEnumerable<CustomAttribute> attributes, string? attributeName)
         {
             return attributes.FirstOrDefault(attribute => attribute.Constructor?.DeclaringType?.FullName == attributeName);
         }
 
-        public static void AddRange<T>([NotNull, ItemCanBeNull] this IList<T> collection, [NotNull, ItemCanBeNull] params T[] values)
+        public static void AddRange<T>(this IList<T> collection, params T[] values)
         {
             AddRange(collection, (IEnumerable<T>) values);
         }
 
-        public static void AddRange<T>([NotNull, ItemCanBeNull] this IList<T> collection, [NotNull, ItemCanBeNull] IEnumerable<T> values)
+        public static void AddRange<T>(this IList<T> collection, IEnumerable<T> values)
         {
             foreach (var value in values)
             {
@@ -31,7 +28,7 @@
             }
         }
 
-        public static void InsertRange<T>([NotNull, ItemCanBeNull] this IList<T> collection, ref int index, [NotNull, ItemCanBeNull] params T[] values)
+        public static void InsertRange<T>(this IList<T> collection, ref int index, params T[] values)
         {
             foreach (var value in values)
             {
@@ -39,7 +36,7 @@
             }
         }
 
-        public static void Replace([NotNull, ItemNotNull] this IList<Instruction> instructions, [NotNull] Instruction oldValue, [NotNull] Instruction newValue)
+        public static void Replace(this IList<Instruction> instructions, Instruction oldValue, Instruction newValue)
         {
             var index = instructions.IndexOf(oldValue);
             if (index == -1)
@@ -48,36 +45,32 @@
             instructions[index] = newValue;
         }
 
-        public static bool AccessesMember([NotNull] this MethodDefinition method, [NotNull] IMemberDefinition member)
+        public static bool AccessesMember(this MethodDefinition method, IMemberDefinition member)
         {
             return method.Body?.Instructions?.Any(inst => inst?.Operand == member) ?? false;
         }
 
-        [NotNull]
-        public static MethodDefinition FindMethod([NotNull] this TypeDefinition type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] parameters)
+        public static MethodDefinition FindMethod(this TypeDefinition type, string name, params Type[] parameters)
         {
             return type.Methods.First(x => (x.Name == name) && x.Parameters.Select(p => p.ParameterType.FullName).SequenceEqual(parameters.Select(p => p.FullName)));
         }
 
-        [CanBeNull]
-        public static MethodDefinition TryFindMethod([NotNull] this TypeDefinition type, [NotNull] string name, [NotNull, ItemNotNull] params TypeReference[] parameters)
+        public static MethodDefinition? TryFindMethod(this TypeDefinition type, string name, params TypeReference[] parameters)
         {
             return type.Methods.FirstOrDefault(x => (x.Name == name) && x.Parameters.Select(p => p.ParameterType).SequenceEqual(parameters, TypeReferenceEqualityComparer.Default));
         }
 
-        [CanBeNull]
-        public static MethodDefinition TryFindMethod([NotNull] this TypeDefinition type, [NotNull] string name, [NotNull, ItemNotNull] params Type[] parameters)
+        public static MethodDefinition? TryFindMethod(this TypeDefinition type, string name, params Type[] parameters)
         {
             return type.Methods.FirstOrDefault(x => (x.Name == name) && x.Parameters.Select(p => p.ParameterType.FullName).SequenceEqual(parameters.Select(p => p.FullName)));
         }
 
-        [CanBeNull]
-        public static MethodDefinition TryFindMethod([NotNull] this TypeDefinition type, [NotNull] string name)
+        public static MethodDefinition? TryFindMethod(this TypeDefinition type, string name)
         {
             return type.Methods.FirstOrDefault(x => (x.Name == name) && x.Parameters.Count == 0);
         }
 
-        public static bool GetEqualityOperator([NotNull] this TypeDefinition type, [CanBeNull] out MethodDefinition method)
+        public static bool GetEqualityOperator(this TypeDefinition type, out MethodDefinition? method)
         {
             method = type.TryFindMethod("op_Equality", type, type);
 
@@ -85,14 +78,12 @@
                    && method.ReturnType?.FullName == typeof(bool).FullName && method.IsStatic;
         }
 
-        [NotNull]
-        public static FieldReference ReferenceFrom([NotNull] this FieldDefinition field, [NotNull] TypeReference callingType)
+        public static FieldReference ReferenceFrom(this FieldDefinition field, TypeReference callingType)
         {
             return callingType.Module.ImportReference(field.InternalReferenceFrom(callingType));
         }
 
-        [NotNull]
-        private static FieldReference InternalReferenceFrom([NotNull] this FieldDefinition field, [NotNull] TypeReference callingType)
+        private static FieldReference InternalReferenceFrom(this FieldDefinition field, TypeReference callingType)
         {
             if (!field.DeclaringType.HasGenericParameters)
                 return field;
@@ -100,8 +91,7 @@
             return new FieldReference(field.Name, field.FieldType, field.DeclaringType.InternalReferenceFrom(callingType));
         }
 
-        [NotNull]
-        private static TypeReference GetGenericReference([NotNull] this TypeReference type, [NotNull, ItemNotNull] ICollection<TypeReference> arguments)
+        private static TypeReference GetGenericReference(this TypeReference type, ICollection<TypeReference> arguments)
         {
             if (!type.HasGenericParameters)
                 return type;
@@ -116,14 +106,12 @@
             return instance;
         }
 
-        [NotNull]
-        public static MethodReference ReferenceFrom([NotNull] this MethodReference callee, [NotNull] TypeReference callingType)
+        public static MethodReference ReferenceFrom(this MethodReference callee, TypeReference callingType)
         {
             return callingType.Module.ImportReference(callee.InternalReferenceFrom(callingType));
         }
 
-        [NotNull]
-        private static MethodReference InternalReferenceFrom([NotNull] this MethodReference callee, [NotNull] TypeReference callingType)
+        private static MethodReference InternalReferenceFrom(this MethodReference callee, TypeReference callingType)
         {
             var declaringType = callee.DeclaringType.InternalReferenceFrom(callingType);
 
@@ -141,14 +129,12 @@
             return reference;
         }
 
-        [NotNull]
-        public static TypeReference ReferenceFrom([NotNull] this TypeReference calleeType, [NotNull] TypeReference callingType)
+        public static TypeReference ReferenceFrom(this TypeReference calleeType, TypeReference callingType)
         {
             return callingType.Module.ImportReference(calleeType.InternalReferenceFrom(callingType));
         }
 
-        [NotNull]
-        private static TypeReference InternalReferenceFrom([NotNull] this TypeReference calleeType, [NotNull] TypeReference callingType)
+        private static TypeReference InternalReferenceFrom(this TypeReference calleeType, TypeReference callingType)
         {
             var calleeTypeDefinition = calleeType.Resolve();
 
@@ -191,7 +177,7 @@
             return calleeType.GetGenericReference(genericArguments.ToArray());
         }
 
-        public static void AddMethod([NotNull] this TypeDefinition type, [NotNull] MethodDefinition method)
+        public static void AddMethod(this TypeDefinition type, MethodDefinition method)
         {
 
             var existing = type.Methods.FirstOrDefault(m =>
@@ -207,7 +193,7 @@
             type.Methods.Add(method);
         }
 
-        public static void MarkAsCompilerGenerated([NotNull] this ICustomAttributeProvider target, [NotNull] SystemReferences systemReferences)
+        public static void MarkAsCompilerGenerated(this ICustomAttributeProvider target, SystemReferences systemReferences)
         {
             var assemblyName = typeof(ModuleWeaver).Assembly.GetName();
             var version = assemblyName.Version.ToString();
@@ -222,16 +208,14 @@
             target.CustomAttributes.AddRange(complierGenerated, debuggerNonUserCode);
         }
 
-        [CanBeNull]
-        public static SequencePoint GetEntryPoint([CanBeNull] this MethodReference method)
+        public static SequencePoint? GetEntryPoint(this MethodReference? method)
         {
             var methodDefinition = method?.Resolve();
 
             return methodDefinition?.Module?.SymbolReader?.Read(methodDefinition)?.SequencePoints?.FirstOrDefault();
         }
 
-        [CanBeNull]
-        public static SequencePoint GetEntryPoint([CanBeNull] this TypeDefinition type)
+        public static SequencePoint? GetEntryPoint(this TypeDefinition? type)
         {
             var classDefinition = type?.Resolve();
             var entryPoint = classDefinition.GetConstructors().FirstOrDefault() ?? classDefinition.GetMethods().OrderBy(m => m.IsSpecialName ? 1 : 0).FirstOrDefault();

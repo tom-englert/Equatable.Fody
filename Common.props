@@ -10,7 +10,7 @@
     <PackageId>$(MSBuildProjectName).Fody</PackageId>
     <LangVersion>latest</LangVersion>
     <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
-    <DevelopmentDependency>true</DevelopmentDependency>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,7 +47,7 @@
   <ItemGroup>
     <TfmSpecificPackageFile Include="build\*.targets" PackagePath="build" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="@(PackageIconFiles)" Link="$(PackageIconFileName)" Pack="true" PackagePath="\" />
     <None Include="@(PackageLicenseFiles)" Link="$(PackageLicenseFileName)" Pack="true" PackagePath="\" />

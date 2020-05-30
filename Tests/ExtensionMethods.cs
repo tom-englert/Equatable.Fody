@@ -1,15 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-
-using JetBrains.Annotations;
-
-namespace Tests
+﻿namespace Tests
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+
     public static class ExtensionMethods
     {
-        [NotNull]
-        public static dynamic GetInstance([NotNull] this Assembly assembly, [NotNull] string className, [NotNull, ItemNotNull] params object[] args)
+        public static dynamic GetInstance(this Assembly assembly, string className, params object[] args)
         {
             try
             {
@@ -25,8 +22,7 @@ namespace Tests
             }
         }
 
-        [CanBeNull]
-        private static Assembly CurrentDomain_AssemblyResolve([NotNull] object sender, [NotNull] ResolveEventArgs args)
+        private static Assembly? CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name);
             var location = Path.GetDirectoryName(args.RequestingAssembly.Location);

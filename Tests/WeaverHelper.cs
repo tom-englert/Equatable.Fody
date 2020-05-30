@@ -1,47 +1,33 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-using Fody;
-
-using JetBrains.Annotations;
-
-using Mono.Cecil;
-
-using TomsToolbox.Core;
-
-namespace Tests
+﻿namespace Tests
 {
-    using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
+    using System.Reflection;
 
     using Equatable.Fody;
 
-    using Mono.Cecil.Cil;
+    using Fody;
+
+    using Mono.Cecil;
+
+    using TomsToolbox.Core;
 
     internal class WeaverHelper : DefaultAssemblyResolver
     {
-        [NotNull]
         private static readonly Dictionary<string, WeaverHelper> _cache = new Dictionary<string, WeaverHelper>();
 
-        [NotNull]
         private readonly TestResult _testResult;
 
-        [NotNull]
         public Assembly Assembly => _testResult.Assembly;
 
-        [NotNull, ItemNotNull]
-        public IEnumerable<string> Errors => _testResult.Errors.Select(e => LogError(e));
+        public IEnumerable<string> Errors => _testResult.Errors.Select(LogError);
 
-        [NotNull, ItemNotNull]
-        public IEnumerable<string> Messages => _testResult.Messages.Select(m => LogInfo(m));
+        public IEnumerable<string> Messages => _testResult.Messages.Select(LogInfo);
 
-        [NotNull, ItemNotNull]
-        public IEnumerable<string> Warnings => _testResult.Warnings.Select(w => LogError(w));
+        public IEnumerable<string> Warnings => _testResult.Warnings.Select(LogError);
         
-
-        [NotNull]
-        public static WeaverHelper Create([NotNull] string assemblyName = "AssemblyToProcess")
+        public static WeaverHelper Create(string assemblyName = "AssemblyToProcess")
         {
             lock (typeof(WeaverHelper))
             {
@@ -50,12 +36,12 @@ namespace Tests
             }
         }
 
-        private WeaverHelper([NotNull] string assemblyName)
+        private WeaverHelper(string assemblyName)
         {
             _testResult = new ModuleWeaver().ExecuteTestRun(assemblyName + ".dll", true, null, null, null, new[] { "0x80131869" });
         }
 
-        private string LogInfo([NotNull] LogMessage message)
+        private string LogInfo(LogMessage message)
         {
             return message.MessageImportance + ": "+ message.Text;
         }

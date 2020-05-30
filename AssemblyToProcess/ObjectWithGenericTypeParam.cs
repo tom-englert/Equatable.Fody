@@ -1,14 +1,14 @@
 ﻿namespace AssemblyToProcess
 {
-    using System;
-    using System.ComponentModel.Composition;
-
-    using Equatable;
-
-    using Xunit;
-
     namespace Base
     {
+        using System;
+        using System.ComponentModel.Composition;
+
+        using Equatable;
+
+        using Xunit;
+
         using Target = ObjectWithGenericTypeParam<string, ObjectWithValueTypeMembers>;
 
         [ImplementsEquatable]
@@ -122,7 +122,12 @@
 
     namespace Derived
     {
+        using System;
+        using System.ComponentModel.Composition;
+
         using AssemblyToProcess.Base;
+
+        using Equatable;
 
         using Xunit;
 

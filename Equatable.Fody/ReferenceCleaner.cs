@@ -3,13 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using JetBrains.Annotations;
-
     using Mono.Cecil;
 
     internal class ReferenceCleaner
     {
-        [NotNull, ItemNotNull]
         private static readonly HashSet<string> _attributesToRemove = new HashSet<string>
         {
             AttributeNames.ImplementsEquatable,
@@ -18,14 +15,10 @@
             AttributeNames.CustomGetHashCode
         };
 
-        [NotNull]
         private readonly ModuleDefinition _moduleDefinition;
-        [NotNull]
-        private readonly ILogger _logger;
 
-        public ReferenceCleaner([NotNull] ModuleDefinition moduleDefinition, [NotNull] ILogger logger)
+        public ReferenceCleaner(ModuleDefinition moduleDefinition)
         {
-            _logger = logger;
             _moduleDefinition = moduleDefinition;
         }
 
@@ -40,7 +33,7 @@
             RemoveAttributes(_moduleDefinition.Assembly.CustomAttributes);
         }
 
-        private void ProcessType([NotNull] TypeDefinition type)
+        private void ProcessType(TypeDefinition type)
         {
             RemoveAttributes(type.CustomAttributes);
 
@@ -60,7 +53,7 @@
             }
         }
 
-        private void RemoveAttributes([NotNull, ItemNotNull] ICollection<CustomAttribute> customAttributes)
+        private void RemoveAttributes(ICollection<CustomAttribute> customAttributes)
         {
             var attributesToRemove = customAttributes
                 .Where(attribute => _attributesToRemove.Contains(attribute.Constructor.DeclaringType.FullName))
