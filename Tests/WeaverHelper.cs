@@ -1,18 +1,18 @@
-﻿namespace Tests
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+
+using Equatable.Fody;
+
+using Fody;
+
+using Mono.Cecil;
+
+using TomsToolbox.Essentials;
+
+namespace Tests
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-
-    using Equatable.Fody;
-
-    using Fody;
-
-    using Mono.Cecil;
-
-    using TomsToolbox.Core;
-
     internal class WeaverHelper : DefaultAssemblyResolver
     {
         private static readonly Dictionary<string, WeaverHelper> _cache = new Dictionary<string, WeaverHelper>();

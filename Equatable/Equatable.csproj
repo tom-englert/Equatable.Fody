@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FodyPackaging" Version="6.2.0" PrivateAssets="All" />
-    <PackageReference Include="Fody" Version="6.2.0" PrivateAssets="None" />
+    <PackageReference Include="FodyPackaging" Version="6.2.4" PrivateAssets="All" />
+    <PackageReference Include="Fody" Version="6.2.4" PrivateAssets="None" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
