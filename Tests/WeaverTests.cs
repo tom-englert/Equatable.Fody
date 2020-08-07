@@ -45,6 +45,6 @@ public class WeaverTests
             _testOutputHelper.WriteLine(message);
         }
 
-        Assert.Equal(16, _weaverHelper.Messages.Count());
+        Assert.Equal(17, _weaverHelper.Messages.Count());
     }
 }

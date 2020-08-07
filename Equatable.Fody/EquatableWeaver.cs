@@ -352,9 +352,10 @@
                     var loadArgument0Instruction = memberDefinition.GetLoadArgumentInstruction(method, 0);
                     var loadArgument1Instruction = memberDefinition.GetLoadArgumentInstruction(method, 1);
                     var loadInstruction = memberDefinition.GetValueInstruction(classDefinition);
-                    var memberType = memberDefinition.MemberType.Resolve();
-
-                    if (memberType.FullName == typeof(string).FullName)
+                    var memberType = memberDefinition.MemberType;
+                    var memberTypeDefinition = memberType.Resolve();
+                    
+                    if (memberTypeDefinition.FullName == typeof(string).FullName)
                     {
                         var comparison = (StringComparison)(memberDefinition.EqualsAttribute?.ConstructorArguments.Select(a => a.Value).FirstOrDefault() ?? default(StringComparison));
                         var comparer = _systemReferences.StringComparer;
@@ -369,9 +370,9 @@
                             Instruction.Create(OpCodes.Callvirt, _systemReferences.StringComparerEquals),
                             Instruction.Create(OpCodes.Brfalse, returnFalseLabel));
                     }
-                    else if (memberType.IsValueType)
+                    else if (memberTypeDefinition.IsValueType)
                     {
-                        if (_simpleTypes.Contains(memberType.FullName))
+                        if (_simpleTypes.Contains(memberTypeDefinition.FullName))
                         {
                             instructions.InsertRange(ref index,
                                 loadArgument0Instruction,
@@ -380,7 +381,7 @@
                                 loadInstruction,
                                 Instruction.Create(OpCodes.Bne_Un, returnFalseLabel));
                         }
-                        else if (memberType.GetEqualityOperator(out var equalityMethod))
+                        else if (memberTypeDefinition.GetEqualityOperator(out var equalityMethod))
                         {
                             instructions.InsertRange(ref index,
                                 loadArgument0Instruction,
@@ -405,7 +406,7 @@
                     }
                     else
                     {
-                        if (memberType.GetEqualityOperator(out var equalityMethod))
+                        if (memberTypeDefinition.GetEqualityOperator(out var equalityMethod))
                         {
                             instructions.InsertRange(ref index,
                                 loadArgument0Instruction,
